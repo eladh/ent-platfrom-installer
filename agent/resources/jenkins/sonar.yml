@@ -1,0 +1,10 @@
+sonar_qube_servers:
+  installations:
+    my-sonar-qube:
+      serverUrl:
+      serverVersion: '7.6'
+      serverAuthenticationToken:
+      mojoVersion: 7.6
+      triggers:
+        skipScmCause: true
+        skipUpstreamCause: true

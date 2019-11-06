@@ -1,0 +1,25 @@
+    project = "job"
+    (jobName, repo ,jenkinsFilePath) = project.split("\\|" ,3);
+    pipelineJob(jobName) {
+        definition {
+            cpsScmFlowDefinition {
+                scm {
+                    gitSCM {
+                        userRemoteConfigs {
+                            userRemoteConfig {
+                                url(repo)
+                                name('master')
+                                refspec(null)
+                                credentialsId('github')
+                            }
+                        }
+                        doGenerateSubmoduleConfigurations(false)
+                        browser {}
+                        gitTool(null)
+                    }
+                }
+                scriptPath(jenkinsFilePath)
+            }
+        }
+        customParams
+    }

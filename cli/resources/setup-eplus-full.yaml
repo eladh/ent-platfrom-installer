@@ -1,0 +1,146 @@
+---
+cluster:
+  name:
+  domain:
+vendor:
+  type: gcp
+  region: us-central1
+  zone: us-central1-a
+  project: devops-consulting
+  gcp:
+    storage:
+      identity:
+      secret:
+art_license: 
+edge_license: 
+sites:
+  - name: USA
+    description: US West coast site
+    city:
+      name: Sunnyvale
+      country_code: US
+      latitude: 37.36883
+      longitude: -122.03635
+  - name: England
+    description: Europe West site
+    city:
+      name: London
+      country_code: GB
+      latitude: 51.5074
+      longitude: 0.1278
+services:
+  versions:
+    artifactory: 7.17.1
+    distribution: 3.4.0
+    jfmc: 1.1.5
+    xray: 1.0.5
+    sonar: 0.15.0
+    jenkins: 2.164.2
+  artifactory:
+    - name: artifactory
+      site: USA
+      auth_server: true
+      repos:
+        - name: gradle
+          local: true
+          remote: true
+          virtual: true
+          url: https://jcenter.bintray.com
+          package_type: gradle
+        - name: docker
+          local: true
+          remote: true
+          virtual: true
+          url: https://registry-1.docker.io/
+          package_type: docker
+        - name: docker-prod
+          local: true
+          package_type: docker
+        - name: npm
+          local: true
+          remote: true
+          virtual: true
+          url: https://registry.npmjs.org
+          package_type: npm
+        - name: helm
+          local: true
+  distribution:
+    name: distribution
+    site: USA
+  edges:
+    - name: edge-london
+      site: England
+      auth_server: false
+      repos:
+        - name: docker-prod
+          local: true
+        - name: helm
+          local: true
+  xray:
+    - name: xray-server
+      site: USA
+      artifactory: artifactory
+      policies:
+        - name: securityPolicy
+          type: security
+          description: some description
+          rules:
+            - name: securityRule
+              priority: 1
+              criteria:
+                min_severity: all severities
+              actions:
+                fail_build: false
+                block_download:
+                  unscanned: false
+                  active: true
+      watches:
+        - general_data:
+            name: vuln-prod
+            description: This is a watch for security threats
+            active: true
+          project_resources:
+            resources:
+              - type: repository
+                bin_mgr_id: artifactory
+                name: docker-local
+                filters:
+                  - type: regex
+                    value: ".*"
+              - type: build
+                name: docker-app-demo
+                bin_mgr_id: artifactory
+                clickable: true
+          assigned_policies:
+            - name: securityPolicy
+              type: security
+tools:
+  dev: true
+  sonarqube: true
+  glowroot: true
+  jenkins:
+    site: USA
+    jobs:
+      - name: docker-app-demo
+        url: https://github.com/jfrog/consulting
+        pipeline: jenkins/docker-app-demo/Jenkinsfile.groovy
+        params:
+          - name: XRAY_SCAN
+            type: booleanParam
+            default_value: false
+            desc: uncheck to disable XRAY_SCAN scan
+      - name: npm-app-demo
+        url: https://github.com/jfrog/consulting
+        pipeline: jenkins/npm-app-demo/Jenkinsfile.groovy
+      - name: gradle-app-demo
+        url: https://github.com/jfrog/consulting
+        pipeline: jenkins/gradle-app-demo/Jenkinsfile.groovy
+      - name: distribute-release-bundle-demo/
+        url: https://github.com/jfrog/consulting
+        pipeline: jenkins/distribute-release-bundle-demo//Jenkinsfile.groovy
+      - name: create-release-bundle-demo
+        url: https://github.com/jfrog/consulting
+        pipeline: jenkins/create-release-bundle-demo/Jenkinsfile.groovy
+      - name: helm-app-demo
+        url: https://github.com/jfrog/consulting
+        pipeline: jenkins/helm-app-demo/Jenkinsfile.groovy

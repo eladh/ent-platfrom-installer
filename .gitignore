@@ -1,0 +1,26 @@
+
+# Build
+target
+bin
+
+# Eclipse
+.project
+.settings
+.classpath
+.springBeans
+
+#InteliliJ Idea
+.idea/*
+*.iml
+
+#VScode IDE
+.vscode
+
+# Exitor
+.DS_Store
+
+#Build
+build/
+
+#Emacs
+**/*~

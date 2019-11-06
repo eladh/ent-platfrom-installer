@@ -1,0 +1,32 @@
+resources:
+- name: {{ properties['name'] }}-cluster
+  type: container.v1.cluster
+  properties:
+    zone: {{ properties['zone'] }}
+    cluster:
+      description: {{ properties['description'] }}
+      legacyAbac:
+        enabled: true
+      nodePools:
+      - name: default-pool
+        initialNodeCount: {{ properties['initialNodeCount'] | default(1) }}
+        config:
+          machineType: {{ properties['machineType'] | default('n1-standard-1') }}
+          oauthScopes:
+          - https://www.googleapis.com/auth/cloud-platform
+          - https://www.googleapis.com/auth/compute
+          - https://www.googleapis.com/auth/devstorage.read_only
+          - https://www.googleapis.com/auth/logging.write
+          - https://www.googleapis.com/auth/monitoring
+          preemptible: false
+        autoscaling:
+          enabled: true
+          minNodeCount: {{ properties['minNodeCount'] | default(1) }}
+          maxNodeCount: {{ properties['maxNodeCount'] | default(3) }}
+        management:
+          autoUpgrade: false
+          autoRepair: true
+          
+outputs:
+- name: clusterName
+  value: $(ref.{{ properties['name'] }}-cluster.name)

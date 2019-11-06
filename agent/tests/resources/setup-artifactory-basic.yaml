@@ -1,0 +1,45 @@
+---
+cluster:
+  name:
+  domain:
+vendor:
+  type: gcp
+  region: us-central1
+  zone: us-central1-a
+  project: devops-consulting
+  gcp:
+    storage:
+      identity:
+      secret:
+sites:
+  - name: USA
+    description: US West coast site
+    city:
+      name: Sunnyvale
+      country_code: US
+      latitude: 37.36883
+      longitude: -122.03635
+  - name: England
+    description: Europe West site
+    city:
+      name: London
+      country_code: GB
+      latitude: 51.5074
+      longitude: 0.1278
+services:
+  versions:
+    artifactory: 7.17.1
+    distribution: 3.4.0
+    jfmc: 1.1.5
+    xray: 1.0.5
+    sonar: 0.15.0
+    jenkins: 2.164.2
+  artifactory:
+    - name: artifactory
+      site: USA
+      auth_server: true
+tools:
+  dev: false
+  sonarqube: false
+  glowroot: true
+  ldap: {}

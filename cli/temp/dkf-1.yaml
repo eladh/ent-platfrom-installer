@@ -1,0 +1,178 @@
+tempdir: /home/appuser/temp/
+cluster:
+  name: dkf-1
+  domain: dkf-1
+pipeline:
+  token: ""
+  repo: ""
+  source: ""
+vendor:
+  type: gcp
+  zone: us-central1-a
+  region: us-central1
+  project: devops-consulting
+  gcp:
+    storage:
+      identity: ""
+      secret: ""
+art_license: ""
+edge_license: ""
+sites:
+- name: USA
+  description: US West coast site
+  city:
+    name: Sunnyvale
+    country_code: US
+    latitude: 37.36883
+    longitude: -122.03635
+- name: England
+  description: Europe West site
+  city:
+    name: London
+    country_code: GB
+    latitude: 51.5074
+    longitude: 0.1278
+services:
+  install_only: false
+  artifactory:
+  - name: artifactory
+    site: USA
+    auth_server: true
+    high_availability:
+      replica_count: 0
+      min_available: 0
+    storage:
+      name: ""
+      location: ""
+      type: ""
+    repos:
+    - local: true
+      remote: true
+      virtual: true
+      package_type: gradle
+      name: gradle
+      url: https://jcenter.bintray.com
+      externalDependenciesRemoteRepo: ""
+    - local: true
+      remote: true
+      virtual: true
+      package_type: docker
+      name: docker
+      url: https://registry-1.docker.io/
+      externalDependenciesRemoteRepo: ""
+    - local: true
+      remote: false
+      virtual: false
+      package_type: docker
+      name: docker-prod
+      url: ""
+      externalDependenciesRemoteRepo: ""
+    - local: true
+      remote: true
+      virtual: true
+      package_type: npm
+      name: npm
+      url: https://registry.npmjs.org
+      externalDependenciesRemoteRepo: ""
+    - local: true
+      remote: false
+      virtual: false
+      package_type: ""
+      name: helm
+      url: ""
+      externalDependenciesRemoteRepo: ""
+    replications: []
+  edges:
+  - name: edge-london
+    site: England
+    auth_server: false
+    high_availability:
+      replica_count: 0
+      min_available: 0
+    storage:
+      name: ""
+      location: ""
+      type: ""
+    repos:
+    - local: true
+      remote: false
+      virtual: false
+      package_type: ""
+      name: docker-prod
+      url: ""
+      externalDependenciesRemoteRepo: ""
+    - local: true
+      remote: false
+      virtual: false
+      package_type: ""
+      name: helm
+      url: ""
+      externalDependenciesRemoteRepo: ""
+    replications: []
+  xray:
+  - name: xray-server
+    site: USA
+    artifactory: artifactory
+    builds: []
+    repos: []
+    watches:
+    - general_data:
+        name: vuln-prod
+        description: This is a watch for security threats
+        active: true
+      project_resources:
+        resources:
+        - type: repository
+          bin_mgr_id: artifactory
+          name: docker-local
+          filters:
+          - type: regex
+            value: .*
+        - type: build
+          bin_mgr_id: artifactory
+          name: docker-app-demo
+          clickable: true
+      assigned_policies:
+      - name: securityPolicy
+        type: security
+    policies:
+    - name: securityPolicy
+      type: security
+      description: some description
+      rules:
+      - name: securityRule
+        priority: 1
+        criteria:
+          min_severity: all severities
+        actions:
+          fail_build: false
+          block_download:
+            unscanned: false
+            active: true
+  distribution:
+    name: distribution
+    site: USA
+  versions:
+    artifactory: 7.17.1
+    artifactory_ha: ""
+    xray: 1.0.5
+    distribution: 3.4.0
+    jfmc: 1.1.5
+    sonar: 0.15.0
+    jenkins: 2.164.2
+tools:
+  dev: true
+  glowroot: true
+  sonarqube: true
+  jenkins:
+    jobs:
+    - name: npm-app-demo
+      url: https://github.com/jfrog/consulting
+      pipeline: jenkins/npm-app-demo/Jenkinsfile.groovy
+      params:
+      - name: dddd
+        type: booleanParam
+        default_value: "false"
+        desc: uncheck to disable tests
+    site: USA
+  ldap: {}

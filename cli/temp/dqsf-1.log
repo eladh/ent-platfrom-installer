@@ -1,0 +1,86 @@
+ -------------
+| GCLOUD INFO |
+ -------------
+Google Cloud SDK [268.0.0]
+
+Platform: [Linux, x86_64] ('Linux', '5122211c2cf4', '4.9.125-linuxkit', '#1 SMP Fri Sep 7 08:20:28 UTC 2018', 'x86_64', '')
+Locale: (None, None)
+Python Version: [2.7.16 (default, May  6 2019, 19:35:26)  [GCC 8.3.0]]
+Python Location: [/usr/bin/python2]
+Site Packages: [Disabled]
+
+Installation Root: [/home/appuser/google-cloud-sdk]
+Installed Components:
+  core: [2019.10.18]
+  beta: [2019.05.17]
+  gsutil: [4.45]
+  bq: [2.0.49]
+System PATH: [/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin]
+Python PATH: [/home/appuser/google-cloud-sdk/lib/third_party:/home/appuser/google-cloud-sdk/lib:/usr/lib/python27.zip:/usr/lib/python2.7:/usr/lib/python2.7/plat-linux2:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload]
+Cloud SDK on PATH: [False]
+Kubectl on PATH: [/usr/local/bin/kubectl]
+
+Installation Properties: [/home/appuser/google-cloud-sdk/properties]
+User Config Directory: [/home/appuser/.config/gcloud]
+Active Configuration Name: [default]
+Active Configuration Path: [/home/appuser/.config/gcloud/configurations/config_default]
+
+Account: [None]
+Project: [None]
+
+Current Properties:
+  [core]
+    disable_usage_reporting: [True]
+
+Logs Directory: [/home/appuser/.config/gcloud/logs]
+Last Log File: [/home/appuser/.config/gcloud/logs/2019.10.29/12.56.35.008832.log]
+
+git: [git version 2.20.1]
+ssh: [OpenSSH_7.9p1, OpenSSL 1.1.1b  26 Feb 2019]
+
+
+ ------------------------
+| KUBECTL CLIENT VERSION |
+ ------------------------
+Client Version: version.Info{Major:"1", Minor:"12", GitVersion:"v1.12.9", GitCommit:"e09f5c40b55c91f681a46ee17f9bc447eeacee57", GitTreeState:"clean", BuildDate:"2019-05-27T16:08:57Z", GoVersion:"go1.10.8", Compiler:"gc", Platform:"linux/amd64"}
+
+ ---------------------
+| HELM CLIENT VERSION |
+ ---------------------
+Client: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
+
+ ----------------
+| AUTHENTICATE  |
+ ----------------
+
+ ----------------
+| RUN           |
+ ----------------
+2019-11-04T23:04:45Z [✿]  start platform install
+2019-11-04T23:04:45Z [✿]  Use configuration file = ./setup.yaml
+2019-11-04T23:04:45Z [✿]  temp dir is /home/appuser/temp/
+2019-11-04T23:04:45Z [✔]  Start GCP init
+2019-11-04T23:04:45Z [✿]  cmd =gcloud auth activate-service-account --key-file=/home/appuser/license.json
+2019-11-04T23:04:46Z [✿]  cmd =gcloud config set compute/zone us-central1-a
+2019-11-04T23:04:46Z [✿]  cmd =gcloud config set project devops-consulting
+2019-11-04T23:04:48Z [✿]  cmd =gcloud services enable compute.googleapis.com
+2019-11-04T23:04:49Z [✿]  cmd =gcloud services enable container.googleapis.com
+2019-11-04T23:04:51Z [✿]  Install Kubernetes Cluster
+2019-11-04T23:04:51Z [✿]  cmd =gcloud deployment-manager deployments create dqsf-1-deploy --config /home/appuser/temp/properties.yaml
+2019-11-04T23:08:54Z [✿]  cmd =gcloud container clusters get-credentials dqsf-1-cluster  --zone us-central1-a
+2019-11-04T23:08:55Z [✿]  Setup Kubernetes Permissions
+2019-11-04T23:08:55Z [✿]  cmd =kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+2019-11-04T23:09:05Z [✿]  cmd =gcloud services enable cloudbuild.googleapis.com
+2019-11-04T23:28:58Z [✿]  cmd =kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts;
+2019-11-04T23:29:07Z [✿]  Install Helm + Tiller
+2019-11-04T23:29:07Z [✿]  cmd =helm init --client-only
+2019-11-04T23:29:10Z [✿]  cmd =helm plugin install https://github.com/rimusz/helm-tiller --version=0.9.0
+2019-11-05T07:09:08Z [✿]  cmd =helm repo add jfrog https://charts.jfrog.io/
+2019-11-05T07:09:10Z [✿]  cmd =helm repo update
+2019-11-05T07:33:32Z [✿]  Installing Services
+2019-11-05T07:33:32Z [✿]  Install Mission Control
+2019-11-05T07:33:32Z [✿]  cmd =helm tiller run -- helm install  --name mission-control jfrog/mission-control --version 1.1.5 --set mongodb.db.adminPassword=zooloo  --set mongodb.db.insightPassword=zooloo  --set mongodb.db.mcPassword=zooloo  --set postgresql.db.jfisPassword=zooloo  --set postgresql.db.jfscPassword=zooloo  --set postgresql.db.jfexPassword=zooloo  --set postgresql.db.jfmcPassword=zooloo  --set postgresql.persistence.size=10Gi  --set elasticsearch.persistence.size=10Gi  --set missionControl.persistence.size=10Gi  --set postgresql.postgresPassword=zooloo 
+2019-11-05T07:33:32Z [✖]  Unable to execute command= helm tiller run -- helm install  --name mission-control jfrog/mission-control --version 1.1.5 --set mongodb.db.adminPassword=zooloo  --set mongodb.db.insightPassword=zooloo  --set mongodb.db.mcPassword=zooloo  --set postgresql.db.jfisPassword=zooloo  --set postgresql.db.jfscPassword=zooloo  --set postgresql.db.jfexPassword=zooloo  --set postgresql.db.jfmcPassword=zooloo  --set postgresql.persistence.size=10Gi  --set elasticsearch.persistence.size=10Gi  --set missionControl.persistence.size=10Gi  --set postgresql.postgresPassword=zooloo 
+%!!(MISSING)(EXTRA *exec.ExitError=exit status 6)2019-11-05T07:33:32Z [✖]  result=curl: (6) Could not resolve host: storage.googleapis.com
+Error: plugin "tiller" exited with error
+

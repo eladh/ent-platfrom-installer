@@ -1,0 +1,27 @@
+//TODO - Version 7 support
+
+// TODO - add unit testing -  https://bmuschko.com/blog/go-testing-frameworks/
+// TODO - add cross logging support - elk - (https://akomljen.com/get-kubernetes-logs-with-efk-stack-in-5-minutes/)
+// TODO - Secure inner cluster communication between pods - define NetworkPolicy rules ?
+          see https://github.com/ahmetb/kubernetes-network-policy-recipes
+
+// TODO - Expose API to request/revoke Certificates from external certificate authority CA
+// TODO - Expose API to create DNS records for all services
+// TODO - Install prometheus
+// TODO - Think about External DB for all services
+// TODO - use LetsEncrypt for testing
+// TODO - version upgrades / rollbacks
+
+// TODO - https://medium.com/logistimo-engineering-blog/how-did-i-use-apm-in-kubernetes-ecosystem-8f22d52beb03
+
+// TODO - https://gist.github.com/ahmetb/548059cdbf12fb571e4e2f1e29c48997
+
+// TODO - https://sysdig.com/blog/enable-kubernetes-pod-security-policy/
+
+// TODO - in cluster communication - see https://github.com/kubernetes/client-go/blob/master/examples/in-cluster-client-configuration/main.go
+
+// TODO - remove /var/opt/jfrog/distribution/.platform/.delete_me_to_pair_artifactory.lock
+// TODO - fix distribution .lock file delete upon node restart
+// TODO - distribute certificates upon node change/delete/create events..
+// TODO - generate data/artifacts https://github.com/jfrog/jfrog-data-generator
+// TODO - finish LDAP Support

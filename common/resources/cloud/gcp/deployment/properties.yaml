@@ -1,0 +1,15 @@
+imports:
+- path: templates/cluster.jinja
+  name: cluster.jinja
+
+resources:
+- name: deploy
+  type: cluster.jinja
+  properties:
+    name: name
+    description: "Deploy Cluster"
+    zone: us-central1-a
+    initialNodeCount: 2
+    minNodeCount: 2
+    maxNodeCount: 2
+    machineType: "n1-standard-4"

@@ -1,0 +1,428 @@
+ -------------
+| GCLOUD INFO |
+ -------------
+Google Cloud SDK [268.0.0]
+
+Platform: [Linux, x86_64] ('Linux', '57c55edfe044', '4.9.125-linuxkit', '#1 SMP Fri Sep 7 08:20:28 UTC 2018', 'x86_64', '')
+Locale: (None, None)
+Python Version: [2.7.16 (default, May  6 2019, 19:35:26)  [GCC 8.3.0]]
+Python Location: [/usr/bin/python2]
+Site Packages: [Disabled]
+
+Installation Root: [/home/appuser/google-cloud-sdk]
+Installed Components:
+  core: [2019.10.18]
+  beta: [2019.05.17]
+  gsutil: [4.45]
+  bq: [2.0.49]
+System PATH: [/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin]
+Python PATH: [/home/appuser/google-cloud-sdk/lib/third_party:/home/appuser/google-cloud-sdk/lib:/usr/lib/python27.zip:/usr/lib/python2.7:/usr/lib/python2.7/plat-linux2:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload]
+Cloud SDK on PATH: [False]
+Kubectl on PATH: [/usr/local/bin/kubectl]
+
+Installation Properties: [/home/appuser/google-cloud-sdk/properties]
+User Config Directory: [/home/appuser/.config/gcloud]
+Active Configuration Name: [default]
+Active Configuration Path: [/home/appuser/.config/gcloud/configurations/config_default]
+
+Account: [None]
+Project: [None]
+
+Current Properties:
+  [core]
+    disable_usage_reporting: [True]
+
+Logs Directory: [/home/appuser/.config/gcloud/logs]
+Last Log File: [/home/appuser/.config/gcloud/logs/2019.10.29/12.56.35.008832.log]
+
+git: [git version 2.20.1]
+ssh: [OpenSSH_7.9p1, OpenSSL 1.1.1b  26 Feb 2019]
+
+
+ ------------------------
+| KUBECTL CLIENT VERSION |
+ ------------------------
+Client Version: version.Info{Major:"1", Minor:"12", GitVersion:"v1.12.9", GitCommit:"e09f5c40b55c91f681a46ee17f9bc447eeacee57", GitTreeState:"clean", BuildDate:"2019-05-27T16:08:57Z", GoVersion:"go1.10.8", Compiler:"gc", Platform:"linux/amd64"}
+
+ ---------------------
+| HELM CLIENT VERSION |
+ ---------------------
+Client: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
+
+ ----------------
+| AUTHENTICATE  |
+ ----------------
+
+ ----------------
+| RUN           |
+ ----------------
+2019-11-06T09:56:51Z [✿]  start platform install
+2019-11-06T09:56:51Z [✿]  Use configuration file = ./setup.yaml
+2019-11-06T09:56:51Z [✿]  temp dir is /home/appuser/temp/
+2019-11-06T09:56:51Z [✔]  Start GCP init
+2019-11-06T09:56:51Z [✿]  cmd =gcloud auth activate-service-account --key-file=/home/appuser/license.json
+2019-11-06T09:56:52Z [✿]  cmd =gcloud config set compute/zone us-central1-a
+2019-11-06T09:56:52Z [✿]  cmd =gcloud config set project devops-consulting
+2019-11-06T09:56:54Z [✿]  cmd =gcloud services enable compute.googleapis.com
+2019-11-06T09:56:55Z [✿]  cmd =gcloud services enable container.googleapis.com
+2019-11-06T09:56:57Z [✿]  Install Kubernetes Cluster
+2019-11-06T09:56:57Z [✿]  cmd =gcloud deployment-manager deployments create danielgerbil-1-deploy --config /home/appuser/temp/properties.yaml
+2019-11-06T10:00:38Z [✿]  cmd =gcloud container clusters get-credentials danielgerbil-1-cluster  --zone us-central1-a
+2019-11-06T10:00:39Z [✿]  Setup Kubernetes Permissions
+2019-11-06T10:00:39Z [✿]  cmd =kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+2019-11-06T10:00:47Z [✿]  cmd =gcloud services enable cloudbuild.googleapis.com
+2019-11-06T10:00:48Z [✿]  cmd =kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts;
+2019-11-06T10:00:49Z [✿]  Install Helm + Tiller
+2019-11-06T10:00:49Z [✿]  cmd =helm init --client-only
+2019-11-06T10:00:52Z [✿]  cmd =helm plugin install https://github.com/rimusz/helm-tiller --version=0.9.0
+2019-11-06T10:01:53Z [✿]  cmd =helm repo add jfrog https://charts.jfrog.io/
+2019-11-06T10:01:54Z [✿]  cmd =helm repo update
+2019-11-06T10:01:57Z [✿]  Installing Services
+2019-11-06T10:01:57Z [✿]  Install Mission Control
+2019-11-06T10:01:57Z [✿]  cmd =helm tiller run -- helm install  --name mission-control jfrog/mission-control --version 1.1.5 --set mongodb.db.adminPassword=zooloo  --set mongodb.db.insightPassword=zooloo  --set mongodb.db.mcPassword=zooloo  --set postgresql.db.jfisPassword=zooloo  --set postgresql.db.jfscPassword=zooloo  --set postgresql.db.jfexPassword=zooloo  --set postgresql.db.jfmcPassword=zooloo  --set postgresql.persistence.size=10Gi  --set elasticsearch.persistence.size=10Gi  --set missionControl.persistence.size=10Gi  --set postgresql.postgresPassword=zooloo 
+2019-11-06T10:02:14Z [✿]  Install Artifactory Servers
+2019-11-06T10:02:15Z [✿]  cmd =gcloud compute ssh --zone "us-central1-a" gke-danielgerbil-1-clust-default-pool-1c388996-bjb4 --command " sudo su -c ' mkdir -p /etc/docker/certs.d/docker.artifactory.danielgerbil-1.danielgerbil-1' root && echo '-----BEGIN CERTIFICATE-----
+MIIEFzCCAv+gAwIBAgICBnUwDQYJKoZIhvcNAQELBQAweTELMAkGA1UEBhMCVVMx
+ETAPBgNVBAcTCHNhbiBmcmFuMRAwDgYDVQQKEwdzb21lT3JnMREwDwYDVQQLEwhz
+b21lVW5pdDEyMDAGA1UEAxMpYXJ0aWZhY3RvcnkuZGFuaWVsZ2VyYmlsLTEuZGFu
+aWVsZ2VyYmlsLTEwHhcNMTkxMTA2MTAwMjE0WhcNMjkxMTA2MTAwMjE0WjB5MQsw
+CQYDVQQGEwJVUzERMA8GA1UEBxMIc2FuIGZyYW4xEDAOBgNVBAoTB3NvbWVPcmcx
+ETAPBgNVBAsTCHNvbWVVbml0MTIwMAYDVQQDEylhcnRpZmFjdG9yeS5kYW5pZWxn
+ZXJiaWwtMS5kYW5pZWxnZXJiaWwtMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAMLtqdMBrzihaD+9Dsdqek0w3jO3YgnIkHPJ4VtCPeIsyCuZjyrKG4rP
+tTbwwGoiXFy3ab7XIdaknMrRw1MsbDqKIVh1ci2fA6becHXmhk5rjZb5yV+ThiBC
+5tCUKk/RmMg2Pxrx4pqKt84O/zpgR7ojGBZv61HY6vcMe+dx6Xzyjc36SX5rONfp
+oQyIAlCJFVrIiqNEGyfl2xczfxd/W+T+nx/XxeBufxrHzWO4yFQPdcUBltXABCFX
+SjLxbG78QP7oRF8x4ctnd7aGgSV8KQdRLAvt5a4OBj7xdlpyDuFa1Y1JbIdQhng3
+IvUIyqkQVxMQt+HzypFm4OKReC2HqLMCAwEAAaOBqDCBpTAOBgNVHQ8BAf8EBAMC
+AoQwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAw
+ZgYDVR0RBF8wXYIpYXJ0aWZhY3RvcnkuZGFuaWVsZ2VyYmlsLTEuZGFuaWVsZ2Vy
+YmlsLTGCMGRvY2tlci5hcnRpZmFjdG9yeS5kYW5pZWxnZXJiaWwtMS5kYW5pZWxn
+ZXJiaWwtMTANBgkqhkiG9w0BAQsFAAOCAQEAr1z97AW5sn9wGlDewuTFFnmye52c
+2K6eyWD2w+bUyTk817ucy2HrjG4j+HpScqBGJ2vbjozH4adAacQ44bxLAgfUHa3x
+zRWeqVzFMsPZQk6Ln53NfVWFsZknxrfw8c41Q9wH3QWjQlz6rOMR0z6vyG7KQ++e
+/hswilVRZ/PLqoNouK7DHBOIgOLSKaZ30JFMZi0dT9bFTHqvWnNY1HcrsxNZyoY7
+JuyVV1o/K1X2ynNTISR/tWgUEJz+nGu8UA31DdjqL5eOnluiacaZUdAbMxXhqOKc
+/t45TsTckIBSQtF858HxLiQNKeUtMyXjRceK0a9zhRPnryr8eC3uO5wBJQ==
+-----END CERTIFICATE-----
+' > /tmp/ca.crt && sudo su -c ' mv /tmp/ca.crt /etc/docker/certs.d/docker.artifactory.danielgerbil-1.danielgerbil-1/' root"  </dev/null;2019-11-06T10:02:34Z [✿]  cmd =gcloud compute ssh --zone "us-central1-a" gke-danielgerbil-1-clust-default-pool-1c388996-dl88 --command " sudo su -c ' mkdir -p /etc/docker/certs.d/docker.artifactory.danielgerbil-1.danielgerbil-1' root && echo '-----BEGIN CERTIFICATE-----
+MIIEFzCCAv+gAwIBAgICBnUwDQYJKoZIhvcNAQELBQAweTELMAkGA1UEBhMCVVMx
+ETAPBgNVBAcTCHNhbiBmcmFuMRAwDgYDVQQKEwdzb21lT3JnMREwDwYDVQQLEwhz
+b21lVW5pdDEyMDAGA1UEAxMpYXJ0aWZhY3RvcnkuZGFuaWVsZ2VyYmlsLTEuZGFu
+aWVsZ2VyYmlsLTEwHhcNMTkxMTA2MTAwMjE0WhcNMjkxMTA2MTAwMjE0WjB5MQsw
+CQYDVQQGEwJVUzERMA8GA1UEBxMIc2FuIGZyYW4xEDAOBgNVBAoTB3NvbWVPcmcx
+ETAPBgNVBAsTCHNvbWVVbml0MTIwMAYDVQQDEylhcnRpZmFjdG9yeS5kYW5pZWxn
+ZXJiaWwtMS5kYW5pZWxnZXJiaWwtMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAMLtqdMBrzihaD+9Dsdqek0w3jO3YgnIkHPJ4VtCPeIsyCuZjyrKG4rP
+tTbwwGoiXFy3ab7XIdaknMrRw1MsbDqKIVh1ci2fA6becHXmhk5rjZb5yV+ThiBC
+5tCUKk/RmMg2Pxrx4pqKt84O/zpgR7ojGBZv61HY6vcMe+dx6Xzyjc36SX5rONfp
+oQyIAlCJFVrIiqNEGyfl2xczfxd/W+T+nx/XxeBufxrHzWO4yFQPdcUBltXABCFX
+SjLxbG78QP7oRF8x4ctnd7aGgSV8KQdRLAvt5a4OBj7xdlpyDuFa1Y1JbIdQhng3
+IvUIyqkQVxMQt+HzypFm4OKReC2HqLMCAwEAAaOBqDCBpTAOBgNVHQ8BAf8EBAMC
+AoQwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAw
+ZgYDVR0RBF8wXYIpYXJ0aWZhY3RvcnkuZGFuaWVsZ2VyYmlsLTEuZGFuaWVsZ2Vy
+YmlsLTGCMGRvY2tlci5hcnRpZmFjdG9yeS5kYW5pZWxnZXJiaWwtMS5kYW5pZWxn
+ZXJiaWwtMTANBgkqhkiG9w0BAQsFAAOCAQEAr1z97AW5sn9wGlDewuTFFnmye52c
+2K6eyWD2w+bUyTk817ucy2HrjG4j+HpScqBGJ2vbjozH4adAacQ44bxLAgfUHa3x
+zRWeqVzFMsPZQk6Ln53NfVWFsZknxrfw8c41Q9wH3QWjQlz6rOMR0z6vyG7KQ++e
+/hswilVRZ/PLqoNouK7DHBOIgOLSKaZ30JFMZi0dT9bFTHqvWnNY1HcrsxNZyoY7
+JuyVV1o/K1X2ynNTISR/tWgUEJz+nGu8UA31DdjqL5eOnluiacaZUdAbMxXhqOKc
+/t45TsTckIBSQtF858HxLiQNKeUtMyXjRceK0a9zhRPnryr8eC3uO5wBJQ==
+-----END CERTIFICATE-----
+' > /tmp/ca.crt && sudo su -c ' mv /tmp/ca.crt /etc/docker/certs.d/docker.artifactory.danielgerbil-1.danielgerbil-1/' root"  </dev/null;2019-11-06T10:02:38Z [✿]  cmd =helm tiller run -- helm install  --name artifactory jfrog/artifactory --version 7.17.1  --set postgresql.persistence.size=10Gi   --set postgresql.postgresPassword=zooloo  --set nginx.tlsSecretName=artifactory-tls-secret  --set nginx.customArtifactoryConfigMap=artifactory-nginx-conf  --set artifactory.loggers[0]=request.log --set artifactory.loggers[1]=event.log --set artifactory.loggers[2]=access.log --set artifactory.loggers[3]=artifactory.log --set artifactory.catalinaLoggers[0]=catalina.log --set nginx.catalinaLoggers[0]=access.log --set nginx.catalinaLoggers[1]=error.log  
+2019-11-06T10:02:51Z [✿]  Install Artifactory Edge Servers
+2019-11-06T10:02:51Z [✿]  Install Edge Servers
+2019-11-06T10:02:51Z [✿]  cmd =helm tiller run -- helm install  --name edge-london jfrog/artifactory --version 7.17.1  --set postgresql.postgresPassword=zooloo   --set artifactory.replicator.enabled=true   --set artifactory.replicator.publicUrl=http://localhost:6061   --set artifactory.loggers[0]=request.log --set artifactory.loggers[1]=event.log --set artifactory.loggers[2]=access.log --set artifactory.loggers[3]=artifactory.log --set artifactory.catalinaLoggers[0]=catalina.log --set nginx.catalinaLoggers[0]=access.log --set nginx.catalinaLoggers[1]=error.log 
+2019-11-06T10:03:07Z [✿]  Install Distribution Server
+2019-11-06T10:03:07Z [✿]  cmd =helm tiller run -- helm install  --name distribution jfrog/distribution --version 3.4.0  --set distributor.loggers[0]=distributor.log  --set distributor.loggers[1]=foreman.log  --set distribution.loggers[0]=access.log  --set distribution.loggers[1]=distribution.log  --set distribution.loggers[2]=request.log 
+2019-11-06T10:03:16Z [✿]  Install Xray Servers
+2019-11-06T10:03:16Z [✿]  cmd =helm tiller run -- helm install  --name xray-server jfrog/xray --version 1.0.5 --set common.xrayConfig.indexAllBuilds=true
+2019-11-06T10:03:34Z [✿]  Install SonarQube Server
+2019-11-06T10:03:34Z [✿]  cmd =helm tiller run -- helm install  --name sonarqube-server stable/sonarqube --version 0.15.0 
+2019-11-06T10:03:44Z [✿]  cmd =helm tiller run -- helm install  --name dev  /home/appuser/agent/resources/charts/dev/chart
+2019-11-06T10:05:10Z [✿]  Service artifactory-artifactory-nginx is ready
+2019-11-06T10:05:51Z [✿]  Service distribution is ready
+2019-11-06T10:07:21Z [✿]  Service sonarqube-server-sonarqube is ready
+2019-11-06T10:07:46Z [✿]  Service xray-server is ready
+2019-11-06T10:08:04Z [✿]  Service edge-london-artifactory-nginx is ready
+2019-11-06T10:09:35Z [✿]  Service mission-control is ready
+2019-11-06T10:09:35Z [✿]  finished waiting for install
+2019-11-06T10:09:35Z [✿]  Setup Services
+2019-11-06T10:09:35Z [✿]  Setup Mission Control
+2019-11-06T10:09:35Z [✿]  Setup Mission Control base url
+2019-11-06T10:09:36Z [✿]  request url is http://104.197.97.57/api/v3/settings/base_url ,data is
+2019-11-06T10:09:36Z [✿]  Load Mission Control buckets
+2019-11-06T10:09:38Z [✿]  Load Mission Control sites
+2019-11-06T10:09:40Z [✿]  request url is http://104.197.97.57/api/v3/sites ,data is{"name":"USA","description":"US West coast site","city":{"name":"Sunnyvale","country_code":"US","latitude":37.36883,"longitude":-122.03635},"services":[]}
+2019-11-06T10:09:40Z [✿]  request url is http://104.197.97.57/api/v3/sites ,data is{"name":"England","description":"Europe West site","city":{"name":"London","country_code":"GB","latitude":51.5074,"longitude":0.1278},"services":[]}
+2019-11-06T10:09:40Z [✿]  Setup Artifactory servers
+2019-11-06T10:09:41Z [✿]  create dns for domain artifactory.danielgerbil-1.danielgerbil-1.
+2019-11-06T10:09:42Z [✿]  cmd =gcloud beta dns --project=devops-consulting managed-zones create danielgerbil-1 --description="new zone" --dns-name="danielgerbil-1.danielgerbil-1." --visibility="private" --networks "default"
+2019-11-06T10:09:44Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction start --zone=danielgerbil-1
+2019-11-06T10:09:46Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction add 23.236.57.109 --name=artifactory.danielgerbil-1.danielgerbil-1. --ttl=300 --type=A --zone=danielgerbil-1
+2019-11-06T10:09:46Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction add 23.236.57.109 --name=docker.artifactory.danielgerbil-1.danielgerbil-1. --ttl=300 --type=A --zone=danielgerbil-1
+2019-11-06T10:09:47Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction execute --zone=danielgerbil-1
+2019-11-06T10:09:49Z [✿]  request url is http://104.197.97.57/api/v3/attach_lic/buckets/enterprise-licenses ,data is{"license_key":"bGljZW5zZTogY0hKdlpIVmpkSE02Q2lBZ1lYSjBhV1poWTNSdmNuazZDaUFnSUNCd2NtOWtkV04w\r\nT2lCYVdHaDNZVmhLYkdONmIyZE5ha0Y1VFVNd2QwOVRNSGRPVmxGNFRVUnZNVTlVYnpGUFZtOUxZ\r\nVmRSTmtsRWJHMVplbU40VFdwUk1reFVUbXBOYWxGMFRrUk9hRnBETURST2FsWnJURlJKTWsweVRt\r\nMVBWMGw0V1dwS2JVOVJjSFprTWpWc1kycHZaMU5yV25saU1tTm5Wa1ZXVkZaQmNIZGpiVGwzV2xo\r\nS01HRlhWbnBQYVVJM1psRndlbUZYWkhWWldGSXhZMjFWTmtsSE5URmlSM2RMWkVoS2NGbFhkelpK\r\nUjFwb1lraE9iRU51VWpWalIxVTJTVVZXVDFaRlZsTlZSa3BLVlRCV1psVkZlRlpWZDNBeVdWZDRj\r\nRnBGV25saU1qQTJTVVJKZDAxVWEzUk5SR3QwVFVSV1ZVMVVUVFpOVkZFMlRrUlJkVTFVVFhkWFoy\r\nODlDaUFnSUNCemFXZHVZWFIxY21VNklFNTRiMGc1U25OQ1VGSjZUREJXUXpZMFF6SldRV1pYWlhK\r\nU1RrbHZZbmQzWnpsUVdHUkRXWGdyZUZKNU5FdFpVVGhPVmpCbWVrWjJLMFZwT0hWTFZsTnJkRmwy\r\nYVRKRVpsSTRaSFJQTkZwMk5FaFJOekpCZDAxb1ZVeHVXVVF4ZGpacVNrNUxNVlo1Y1hORkwwMVhW\r\nV28wV1c0d1kwUnNUMlZrZFU5UmFrbHNkM2R6WkVoVFRXbDZjV2xET1VNdmFuRklMMmxWTm01b1Ey\r\nWldWVFZUWWtOTlZrOW9ZWE5MVkVacllqSndTazFZVW5OdFp6bDVRVTV2WkdnMlkwWjRZMWR6VUU5\r\nQ04zSmpTM1pLYjNGS1J6aG9PRzVFUjJoV1l6WkZRU3R4UzNoQ2VGSTNTalZFY1hveldGcDJUa2M1\r\nUjJwc2FIcHlXRTlFUkUxTEsxUTNRak4yYm5aR1VESkZXSGgzTXpWdE16TnNTMDVIYkRKemNrOHlh\r\na3N6U1dacmRGRnlNamRyUVZscWFHeFBjVEZrTDNkWk9GSnJWSFpLVjFwNGQxYzBiMWxKUzFaeWRV\r\nUTBkVVoyYkRCSloyVkNkVWxEVTI0clp6MDlDaUFnZUhKaGVUb0tJQ0FnSUhCeWIyUjFZM1E2SUZw\r\nWWFIZGhXRXBzWTNwdlowMXFRWGxOUXpCM1QxTXdkMDVXVVhoTlJHOHhUMVJ2TVU5V2IwdGhWMUUy\r\nU1VkSk0xcFhWVE5PVkZKcVRGZGFhVTVIVlhST1JGVjZUWGt3TkUxdFdYZE1WMUpvV2xkTmVGcEVU\r\nbWxPVjFwcVdWRndkbVF5Tld4amFtOW5VMnRhZVdJeVkyZFdSVlpVVmtGd2QyTnRPWGRhV0Vvd1lW\r\nZFdlazlwUWpkbVVYQjZZVmRrZFZsWVVqRmpiVlUyU1VjMU1XSkhkMHRrU0Vwd1dWZDNOa2xIV21o\r\naVNFNXNRMjVTTldOSFZUWkpSVTVRVkZVeFJsVnJUa3BSVlhkTFpHMUdjMkZYVWtkamJUbDBUMmxC\r\nZVUxRVJUVk1WRUUxVEZSQk1WWkVSWHBQYWtVd1QycFJNRXhxUlhwTlJtOUxDaUFnSUNCemFXZHVZ\r\nWFIxY21VNklHbEtSMGhRYkdkWVdFNVViUzh4ZG1aVFYyNTVWREptVkdOWmIxaFhTRTlEY0hjeWNY\r\nVm9jekpoYjJadmJuWmlWbTQyZFU1M1JWcGpRVlJMUldkWEwwbHZOaXR3VUd3d2ExcGlXRFpaYlVr\r\nNVEzRlViSGg1ZEc5TVlsRldTMlZ4Y0daQ1YyaGhaelowZFhFMlVtbDNaellyWjJsV04yRkhaVmhC\r\nVDJWU2FIVnZUbmRzVUc1cWFYWnJaV0ZWTkhFNVpFaE9Sbk5oU1U1U2JGRlNVRW95WVdSc1RGRTNl\r\nSHBIUnprelJVTnJVVm8zYkdKT2FYSjRXRXN6ZGpCMmR6ZDNOM1prUVVSdGRHMUtXRUZ4VFhOVVZ6\r\nTTNiMDlGUWs1TGEyeFFibVJXWmpaeFRGaFVMelYzU1daVGVtcHVTVTlIYXpNM01HTnlkRlpZUWtw\r\nb1QyaFdTbUo2YW5CRmFWSm5VVlprWVROS05uUmFNbk4yVURWMVptSjRkR1ZMU0dod1lqWlZlSGRF\r\nYmtjMFdrWjNZakJ3TmpCSGJGcDBXSEYzTm5WVFZGaHBjbXhuTVd0MU9USXZielZLYkVkeVQxRmtX\r\nV2xzTURoeVVUMDlDaUFnWkdsemRISnBZblYwYVc5dU9nb2dJQ0FnY0hKdlpIVmpkRG9nV2xob2Qy\r\nRllTbXhqZW05blRXcEJlVTFETUhkUFV6QjNUbFpSZUUxRWJ6RlBWRzh4VDFadlMyRlhVVFpKUkdz\r\neFQxZE5lVnBFVW0xTVYxRTBUVEpOZEU1RVVURlpVekZwVFZSUk5VeFVWVFJhUjBacVdrUmpORTE2\r\nV21sUFVYQjJaREkxYkdOcWIyZFRhMXA1WWpKaloxWkZWbFJXUVhCM1kyMDVkMXBZU2pCaFYxWjZU\r\nMmxDTjJaUmNIcGhWMlIxV1ZoU01XTnRWVFpKUnpVeFlrZDNTMlJJU25CWlYzYzJTVWRhYUdKSVRt\r\neERibEkxWTBkVk5rbEZWazlXUlZaVFZVWktTbFV3Vm1aVlJYaFdWWGR3TWxsWGVIQmFSVnA1WWpJ\r\nd05rbEVTWGROVkd0MFRVUnJkRTFFVmxWTlZFMDJUVlJSTms1RVVYVk5WRTEzVjJkdlBRb2dJQ0Fn\r\nYzJsbmJtRjBkWEpsT2lCVlptUk5lV3c1U1VVM1ZXZG5ZMDFMUmtaV1pISXlhSFV3ZGtZelpWWlNT\r\nblYzVXpZeWJuQlRTR1V3ZVdWemRYZDRURTl0VVhGblRrUjZNR05PVjNSUmJIQkhkWEpwWVdGa1dE\r\nRm9VVlpNSzNwa1JVdHRNVEl3TUZaWWMya3hSa1JGVlUxVlFtZHVhRUZPTlUwNFlTdFpZbUZ2VDNO\r\nVWJtUmFWelZGUkVOU1FqRldURkJoTURSeE1YcFZLME4zVG5sWFRTdHhNMlozZVhrMU1WYzJZbFpU\r\nSzNVeVRtRnNZMnR3UkdOM1dqazNjbTVwYVVsc2VFeGpjak5XVERaclpHdE5URkU0VWpSSVJUbHpX\r\nbVU1ZFRscmNVeEpVRlYwVDFnd01HNVdlRzFzV1hWUlNsbERkU3M1TUZZelFtcGtiV2hvWjI5NE5V\r\nVTFhRTFvZVc5cGFIbFZlalI0V0hCME9ISTJVelUyTkVZclprSkJTazVHSzNSemVrNWxjMjluT0ZG\r\ncVVWRnRiR0lyTlhCMGJtODVjVUkyY0RoQk9IVTVibU5CTUZreU9WQnlLMUF2VFc0eE1EWTRWREJK\r\nVm1OTVIwdEZXVGxUWjBFOVBRcDJaWEp6YVc5dU9pQXlDZz09CnNpZ25hdHVyZTogVHVTc1cvY1RE\r\nM0ZMREVNZzNFSkRrNDZTOGdpRDMxOXNMZ0xCaWhIcFArcVp0dEQxWHgvbVFXelFoU1ZuNm9kQTNt\r\nanIzRGFSZmMya3AzQk5HOUdJbUZOQ21CU2tZaXNkbHdxL0JUemZBNzBqZVViMXgwMzNuQkVhWXV3\r\nTlZINnZqMnlhRUxjc0dScWZ5WjBaVWVzWVdpR0ZRVmg3WXZuYStLVktBaWJUZ2FiYmFzYUtiOWlx\r\nZkhoRWZkUEtGR0l3NEtMcUhyQ0ltb1l3ZW9TeGk3V2kwNEJDalpDdXhQVWFaZUgwOVR3b1Mzc3Vs\r\nQ29QcUJocURlREQ5bUU5akV4c25rQllOMjJsTlNGdE54TUJGbXNHMUc3aU5HSlBNSXhlNFFCaFp5\r\naER4TTl1V01oM2F0YXFCNTZ2dVQ2YVJha1Y3TzhpR1A5MTVDWENQR2VEaUQvM3pnPT0K\r\n"}
+2019-11-06T10:09:51Z [✿]  request url is http://23.236.57.109:80/artifactory/api/system/licenses ,data is{
+  "status" : 200,
+  "messages" : {
+    "bGljZW5zZTogY0hKdlpIVmpkSE02Q2lBZ1lYSjBhV1poWTNSdmNuazZDaUFnSUNCd2NtOWtkV04w\r\nT2lCYVdHaDNZVmhLYkdONmIyZE5ha0Y1VFVNd2QwOVRNSGRPVmxGNFRVUnZNVTlVYnpGUFZtOUxZ\r\nVmRSTmtsRWJHMVplbU40VFdwUk1reFVUbXBOYWxGMFRrUk9hRnBETURST2FsWnJURlJKTWsweVRt\r\nMVBWMGw0V1dwS2JVOVJjSFprTWpWc1kycHZaMU5yV25saU1tTm5Wa1ZXVkZaQmNIZGpiVGwzV2xo\r\nS01HRlhWbnBQYVVJM1psRndlbUZYWkhWWldGSXhZMjFWTmtsSE5URmlSM2RMWkVoS2NGbFhkelpK\r\nUjFwb1lraE9iRU51VWpWalIxVTJTVVZXVDFaRlZsTlZSa3BLVlRCV1psVkZlRlpWZDNBeVdWZDRj\r\nRnBGV25saU1qQTJTVVJKZDAxVWEzUk5SR3QwVFVSV1ZVMVVUVFpOVkZFMlRrUlJkVTFVVFhkWFoy\r\nODlDaUFnSUNCemFXZHVZWFIxY21VNklFNTRiMGc1U25OQ1VGSjZUREJXUXpZMFF6SldRV1pYWlhK\r\nU1RrbHZZbmQzWnpsUVdHUkRXWGdyZUZKNU5FdFpVVGhPVmpCbWVrWjJLMFZwT0hWTFZsTnJkRmwy\r\nYVRKRVpsSTRaSFJQTkZwMk5FaFJOekpCZDAxb1ZVeHVXVVF4ZGpacVNrNUxNVlo1Y1hORkwwMVhW\r\nV28wV1c0d1kwUnNUMlZrZFU5UmFrbHNkM2R6WkVoVFRXbDZjV2xET1VNdmFuRklMMmxWTm01b1Ey\r\nWldWVFZUWWtOTlZrOW9ZWE5MVkVacllqSndTazFZVW5OdFp6bDVRVTV2WkdnMlkwWjRZMWR6VUU5\r\nQ04zSmpTM1pLYjNGS1J6aG9PRzVFUjJoV1l6WkZRU3R4UzNoQ2VGSTNTalZFY1hveldGcDJUa2M1\r\nUjJwc2FIcHlXRTlFUkUxTEsxUTNRak4yYm5aR1VESkZXSGgzTXpWdE16TnNTMDVIYkRKemNrOHlh\r\na3N6U1dacmRGRnlNamRyUVZscWFHeFBjVEZrTDNkWk9GSnJWSFpLVjFwNGQxYzBiMWxKUzFaeWRV\r\nUTBkVVoyYkRCSloyVkNkVWxEVTI0clp6MDlDaUFnZUhKaGVUb0tJQ0FnSUhCeWIyUjFZM1E2SUZw\r\nWWFIZGhXRXBzWTNwdlowMXFRWGxOUXpCM1QxTXdkMDVXVVhoTlJHOHhUMVJ2TVU5V2IwdGhWMUUy\r\nU1VkSk0xcFhWVE5PVkZKcVRGZGFhVTVIVlhST1JGVjZUWGt3TkUxdFdYZE1WMUpvV2xkTmVGcEVU\r\nbWxPVjFwcVdWRndkbVF5Tld4amFtOW5VMnRhZVdJeVkyZFdSVlpVVmtGd2QyTnRPWGRhV0Vvd1lW\r\nZFdlazlwUWpkbVVYQjZZVmRrZFZsWVVqRmpiVlUyU1VjMU1XSkhkMHRrU0Vwd1dWZDNOa2xIV21o\r\naVNFNXNRMjVTTldOSFZUWkpSVTVRVkZVeFJsVnJUa3BSVlhkTFpHMUdjMkZYVWtkamJUbDBUMmxC\r\nZVUxRVJUVk1WRUUxVEZSQk1WWkVSWHBQYWtVd1QycFJNRXhxUlhwTlJtOUxDaUFnSUNCemFXZHVZ\r\nWFIxY21VNklHbEtSMGhRYkdkWVdFNVViUzh4ZG1aVFYyNTVWREptVkdOWmIxaFhTRTlEY0hjeWNY\r\nVm9jekpoYjJadmJuWmlWbTQyZFU1M1JWcGpRVlJMUldkWEwwbHZOaXR3VUd3d2ExcGlXRFpaYlVr\r\nNVEzRlViSGg1ZEc5TVlsRldTMlZ4Y0daQ1YyaGhaelowZFhFMlVtbDNaellyWjJsV04yRkhaVmhC\r\nVDJWU2FIVnZUbmRzVUc1cWFYWnJaV0ZWTkhFNVpFaE9Sbk5oU1U1U2JGRlNVRW95WVdSc1RGRTNl\r\nSHBIUnprelJVTnJVVm8zYkdKT2FYSjRXRXN6ZGpCMmR6ZDNOM1prUVVSdGRHMUtXRUZ4VFhOVVZ6\r\nTTNiMDlGUWs1TGEyeFFibVJXWmpaeFRGaFVMelYzU1daVGVtcHVTVTlIYXpNM01HTnlkRlpZUWtw\r\nb1QyaFdTbUo2YW5CRmFWSm5VVlprWVROS05uUmFNbk4yVURWMVptSjRkR1ZMU0dod1lqWlZlSGRF\r\nYmtjMFdrWjNZakJ3TmpCSGJGcDBXSEYzTm5WVFZGaHBjbXhuTVd0MU9USXZielZLYkVkeVQxRmtX\r\nV2xzTURoeVVUMDlDaUFnWkdsemRISnBZblYwYVc5dU9nb2dJQ0FnY0hKdlpIVmpkRG9nV2xob2Qy\r\nRllTbXhqZW05blRXcEJlVTFETUhkUFV6QjNUbFpSZUUxRWJ6RlBWRzh4VDFadlMyRlhVVFpKUkdz\r\neFQxZE5lVnBFVW0xTVYxRTBUVEpOZEU1RVVURlpVekZwVFZSUk5VeFVWVFJhUjBacVdrUmpORTE2\r\nV21sUFVYQjJaREkxYkdOcWIyZFRhMXA1WWpKaloxWkZWbFJXUVhCM1kyMDVkMXBZU2pCaFYxWjZU\r\nMmxDTjJaUmNIcGhWMlIxV1ZoU01XTnRWVFpKUnpVeFlrZDNTMlJJU25CWlYzYzJTVWRhYUdKSVRt\r\neERibEkxWTBkVk5rbEZWazlXUlZaVFZVWktTbFV3Vm1aVlJYaFdWWGR3TWxsWGVIQmFSVnA1WWpJ\r\nd05rbEVTWGROVkd0MFRVUnJkRTFFVmxWTlZFMDJUVlJSTms1RVVYVk5WRTEzVjJkdlBRb2dJQ0Fn\r\nYzJsbmJtRjBkWEpsT2lCVlptUk5lV3c1U1VVM1ZXZG5ZMDFMUmtaV1pISXlhSFV3ZGtZelpWWlNT\r\nblYzVXpZeWJuQlRTR1V3ZVdWemRYZDRURTl0VVhGblRrUjZNR05PVjNSUmJIQkhkWEpwWVdGa1dE\r\nRm9VVlpNSzNwa1JVdHRNVEl3TUZaWWMya3hSa1JGVlUxVlFtZHVhRUZPTlUwNFlTdFpZbUZ2VDNO\r\nVWJtUmFWelZGUkVOU1FqRldURkJoTURSeE1YcFZLME4zVG5sWFRTdHhNMlozZVhrMU1WYzJZbFpU\r\nSzNVeVRtRnNZMnR3UkdOM1dqazNjbTVwYVVsc2VFeGpjak5XVERaclpHdE5URkU0VWpSSVJUbHpX\r\nbVU1ZFRscmNVeEpVRlYwVDFnd01HNVdlRzFzV1hWUlNsbERkU3M1TUZZelFtcGtiV2hvWjI5NE5V\r\nVTFhRTFvZVc5cGFIbFZlalI0V0hCME9ISTJVelUyTkVZclprSkJTazVHSzNSemVrNWxjMjluT0ZG\r\ncVVWRnRiR0lyTlhCMGJtODVjVUkyY0RoQk9IVTVibU5CTUZreU9WQnlLMUF2VFc0eE1EWTRWREJK\r\nVm1OTVIwdEZXVGxUWjBFOVBRcDJaWEp6YVc5dU9pQXlDZz09CnNpZ25hdHVyZTogVHVTc1cvY1RE\r\nM0ZMREVNZzNFSkRrNDZTOGdpRDMxOXNMZ0xCaWhIcFArcVp0dEQxWHgvbVFXelFoU1ZuNm9kQTNt\r\nanIzRGFSZmMya3AzQk5HOUdJbUZOQ21CU2tZaXNkbHdxL0JUemZBNzBqZVViMXgwMzNuQkVhWXV3\r\nTlZINnZqMnlhRUxjc0dScWZ5WjBaVWVzWVdpR0ZRVmg3WXZuYStLVktBaWJUZ2FiYmFzYUtiOWlx\r\nZkhoRWZkUEtGR0l3NEtMcUhyQ0ltb1l3ZW9TeGk3V2kwNEJDalpDdXhQVWFaZUgwOVR3b1Mzc3Vs\r\nQ29QcUJocURlREQ5bUU5akV4c25rQllOMjJsTlNGdE54TUJGbXNHMUc3aU5HSlBNSXhlNFFCaFp5\r\naER4TTl1V01oM2F0YXFCNTZ2dVQ2YVJha1Y3TzhpR1A5MTVDWENQR2VEaUQvM3pnPT0K\r\n" : "Valid."
+  }
+}2019-11-06T10:09:57Z [✿]  request url is http://104.197.97.57/api/v3/services ,data is{"name":"artifactory","url":"http://23.236.57.109:80/artifactory","type":"ARTIFACTORY","service_type":"jfrt","service_id":"jfrt@01ds02rc7nsnt90d2zr3eh1gf4","site":{"name":"USA","description":"US West coast site","city":{"name":"Sunnyvale","country_code":"US","latitude":37.36883,"longitude":-122.03635}},"auth_provider":true}
+2019-11-06T10:09:57Z [✿]  Setup Edge nodes
+2019-11-06T10:09:58Z [✿]  request url is http://104.197.97.57/api/v3/attach_lic/buckets/edge-licenses ,data is{"license_key":"bGljZW5zZTogY0hKdlpIVmpkSE02Q2lBZ1lYSjBhV1poWTNSdmNuazZDaUFnSUNCd2NtOWtkV04w\r\nT2lCYVdHaDNZVmhLYkdONmIyZE5ha0Y1VFVNd2QwOVRNSGRPVmxGNFRVUnZNVTlVYnpGUFZtOUxZ\r\nVmRSTmtsSFZUQk5la0YzVGtkVk1reFVZM2RPZWsxMFRrZFNiRnBUTURWUFZGWnNURmRHYTA1NmFH\r\ncE5WRVpxV2tSak0xbDNjSFprTWpWc1kycHZaMU5yV25saU1tTm5Wa1ZXVkZaQmNIZGpiVGwzV2xo\r\nS01HRlhWbnBQYVVJM1psRndlbUZYWkhWWldGSXhZMjFWTmtsSE5URmlSM2RMWkVoS2NGbFhkelpK\r\nUjFwb1lraE9iRU51VWpWalIxVTJTVVZXUlZJd1ZVdGtiVVp6WVZkU1IyTnRPWFJQYVVGNVRVUkZO\r\nVXhVUVRWTVZFRXhWa1JGZWs5cVJURlBha2wzVEdwSk5FNHhiMHNLSUNBZ0lITnBaMjVoZEhWeVpU\r\nb2dTVE5OUlZORmRVd3ZkVU42WVVFeFYwZ3JOVkZXTW14UlFUaFNiVmxTYjNsQmEwZERaVWRpZEcx\r\nUE1tVXlTVk5GTTNsWlNWZDVXRVpYWjJ3M04yOUxTakJKYm1Kd2QzUnpSMlZGWjFWc2IyUk5PRk0w\r\nYVZoYWJUTktUME54VHk5RFMxZGliMUJGVnpGeUsxQkVTR2hEV0UxNVQyRnZkMk41VjA5UmFuUlRT\r\nbGRKT0daTFEwcFZPRUpVTUZkR2FGaDNXblZ6U1RGNlYzUk1WVUpFUjNOa1kyTTRTMk5QZUd4UlpW\r\nZHNkVUZUTDJwdmFHZzVWaTk2WjFwbk1WZEJValZWVEhVemFtVXZkMnBJYkVoellta3lWRFJNY201\r\nUmQydzNVMGc0TVVGWVRWQXpVV05LWkM5M1EweDVUMGRsUTJRd1IwazNhbFJQYWl0c00zZEViVGt5\r\nY25reVNERmlaVXBvYVdOU1pWZGllVm8zVFZSamEwb3dlbFpIU1ZaUllVRXdORXN4YjBacllXaGFR\r\nM0ZCWjIxeVJERkVXalpPVFRWM2RTOXRibnBWZGtSa2FWUjZWRE5aTm5FMWNXSlRjVzVaTVVwaE5I\r\nWjNQVDBLZG1WeWMybHZiam9nTWdvPQpzaWduYXR1cmU6IFE1MzNiQnBTQUl4WmFNazUzOG95R1ln\r\naTdhbk9FTGV4UzVwcnQxUElKZVNDeXdQZStoRnkzQnRsQjd0c0d4K0w5MzFhYXVVaGk1elBYT2hE\r\nVUxJWDFrUTdXRVdkQmR2REF1WkJwZU1vdTljK3YyZjZpRkRTcHpZamtCSlprT0xmdVJueGt5azFB\r\nd3luRHNMY25FMlNvNkxxNlZadzFCK0JRc2U5Q3ltbThFdzRGZ0dLUk0rUXFBMFRZQnVQSzRXTDBa\r\nQWY1ZDl0TjhnV0dyNzdWL21aSmF2MkRwOG1hTUY1THVNcWlQUnErMWlybHF4MXhneEFLbHR4ZnJ6\r\nUzMxTmlNaTJRRmlPSkdDMXFPMnY2eTZjMmxYUjU3K20xOEFXc3dzNkFDRFo3alVRbHFwRHpDSUxK\r\nQW1OUlc0WnNtazBORmZSMUFWRS8waGk5OGdUeWRHKytkZz09Cg==\r\n"}
+2019-11-06T10:10:01Z [✿]  request url is http://34.69.172.171:80/artifactory/api/system/licenses ,data is{
+  "status" : 200,
+  "messages" : {
+    "bGljZW5zZTogY0hKdlpIVmpkSE02Q2lBZ1lYSjBhV1poWTNSdmNuazZDaUFnSUNCd2NtOWtkV04w\r\nT2lCYVdHaDNZVmhLYkdONmIyZE5ha0Y1VFVNd2QwOVRNSGRPVmxGNFRVUnZNVTlVYnpGUFZtOUxZ\r\nVmRSTmtsSFZUQk5la0YzVGtkVk1reFVZM2RPZWsxMFRrZFNiRnBUTURWUFZGWnNURmRHYTA1NmFH\r\ncE5WRVpxV2tSak0xbDNjSFprTWpWc1kycHZaMU5yV25saU1tTm5Wa1ZXVkZaQmNIZGpiVGwzV2xo\r\nS01HRlhWbnBQYVVJM1psRndlbUZYWkhWWldGSXhZMjFWTmtsSE5URmlSM2RMWkVoS2NGbFhkelpK\r\nUjFwb1lraE9iRU51VWpWalIxVTJTVVZXUlZJd1ZVdGtiVVp6WVZkU1IyTnRPWFJQYVVGNVRVUkZO\r\nVXhVUVRWTVZFRXhWa1JGZWs5cVJURlBha2wzVEdwSk5FNHhiMHNLSUNBZ0lITnBaMjVoZEhWeVpU\r\nb2dTVE5OUlZORmRVd3ZkVU42WVVFeFYwZ3JOVkZXTW14UlFUaFNiVmxTYjNsQmEwZERaVWRpZEcx\r\nUE1tVXlTVk5GTTNsWlNWZDVXRVpYWjJ3M04yOUxTakJKYm1Kd2QzUnpSMlZGWjFWc2IyUk5PRk0w\r\nYVZoYWJUTktUME54VHk5RFMxZGliMUJGVnpGeUsxQkVTR2hEV0UxNVQyRnZkMk41VjA5UmFuUlRT\r\nbGRKT0daTFEwcFZPRUpVTUZkR2FGaDNXblZ6U1RGNlYzUk1WVUpFUjNOa1kyTTRTMk5QZUd4UlpW\r\nZHNkVUZUTDJwdmFHZzVWaTk2WjFwbk1WZEJValZWVEhVemFtVXZkMnBJYkVoellta3lWRFJNY201\r\nUmQydzNVMGc0TVVGWVRWQXpVV05LWkM5M1EweDVUMGRsUTJRd1IwazNhbFJQYWl0c00zZEViVGt5\r\nY25reVNERmlaVXBvYVdOU1pWZGllVm8zVFZSamEwb3dlbFpIU1ZaUllVRXdORXN4YjBacllXaGFR\r\nM0ZCWjIxeVJERkVXalpPVFRWM2RTOXRibnBWZGtSa2FWUjZWRE5aTm5FMWNXSlRjVzVaTVVwaE5I\r\nWjNQVDBLZG1WeWMybHZiam9nTWdvPQpzaWduYXR1cmU6IFE1MzNiQnBTQUl4WmFNazUzOG95R1ln\r\naTdhbk9FTGV4UzVwcnQxUElKZVNDeXdQZStoRnkzQnRsQjd0c0d4K0w5MzFhYXVVaGk1elBYT2hE\r\nVUxJWDFrUTdXRVdkQmR2REF1WkJwZU1vdTljK3YyZjZpRkRTcHpZamtCSlprT0xmdVJueGt5azFB\r\nd3luRHNMY25FMlNvNkxxNlZadzFCK0JRc2U5Q3ltbThFdzRGZ0dLUk0rUXFBMFRZQnVQSzRXTDBa\r\nQWY1ZDl0TjhnV0dyNzdWL21aSmF2MkRwOG1hTUY1THVNcWlQUnErMWlybHF4MXhneEFLbHR4ZnJ6\r\nUzMxTmlNaTJRRmlPSkdDMXFPMnY2eTZjMmxYUjU3K20xOEFXc3dzNkFDRFo3alVRbHFwRHpDSUxK\r\nQW1OUlc0WnNtazBORmZSMUFWRS8waGk5OGdUeWRHKytkZz09Cg==\r\n" : "Valid."
+  }
+}2019-11-06T10:10:03Z [✿]  request url is http://104.197.97.57/api/v3/services ,data is{"name":"edge-london","url":"http://34.69.172.171:80/artifactory","type":"ARTIFACTORY","service_type":"jfrt","service_id":"jfrt@01ds02v48ve2r818g16r1818br","site":{"name":"England","description":"Europe West site","city":{"name":"London","country_code":"GB","latitude":51.5074,"longitude":0.1278}},"auth_provider":false}
+2019-11-06T10:10:03Z [✿]  Add artifactory repositories
+2019-11-06T10:10:04Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/gradle-local ,data isSuccessfully created repository 'gradle-local' 
+2019-11-06T10:10:05Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/gradle-remote ,data isSuccessfully created repository 'gradle-remote' 
+2019-11-06T10:10:05Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/gradle ,data isSuccessfully created repository 'gradle' 
+2019-11-06T10:10:06Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/docker-local ,data isSuccessfully created repository 'docker-local' 
+2019-11-06T10:10:06Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/docker-remote ,data isSuccessfully created repository 'docker-remote' 
+2019-11-06T10:10:07Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/docker ,data isSuccessfully created repository 'docker' 
+2019-11-06T10:10:07Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/docker-prod-local ,data isSuccessfully created repository 'docker-prod-local' 
+2019-11-06T10:10:08Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/docker-prod ,data isSuccessfully created repository 'docker-prod' 
+2019-11-06T10:10:08Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/npm-local ,data isSuccessfully created repository 'npm-local' 
+2019-11-06T10:10:09Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/npm-remote ,data isSuccessfully created repository 'npm-remote' 
+2019-11-06T10:10:09Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/npm ,data isSuccessfully created repository 'npm' 
+2019-11-06T10:10:10Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/helm-local ,data isSuccessfully created repository 'helm-local' 
+2019-11-06T10:10:10Z [✿]  request url is http://23.236.57.109/artifactory/api/repositories/helm ,data isSuccessfully created repository 'helm' 
+2019-11-06T10:10:11Z [✿]  request url is http://34.69.172.171/artifactory/api/repositories/docker-prod-local ,data isSuccessfully created repository 'docker-prod-local' 
+2019-11-06T10:10:11Z [✿]  request url is http://34.69.172.171/artifactory/api/repositories/docker-prod ,data isSuccessfully created repository 'docker-prod' 
+2019-11-06T10:10:12Z [✿]  request url is http://34.69.172.171/artifactory/api/repositories/helm-local ,data isSuccessfully created repository 'helm-local' 
+2019-11-06T10:10:13Z [✿]  request url is http://34.69.172.171/artifactory/api/repositories/helm ,data isSuccessfully created repository 'helm' 
+2019-11-06T10:10:13Z [✿]  Setup Circle of trust between all nodes
+2019-11-06T10:10:14Z [✿]  /opt/jfrog/artifactory
+2019-11-06T10:10:14Z [✿]  
+2019-11-06T10:10:15Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDITCCAgmgAwIBAgIRAKxhwA7HyECSrnjASE6/JxswDQYJKoZIhvcNAQELBQAw
+KjEoMCYGA1UEAwwfamZhY0AwMWRzMDJxbnNqYmUwMTBtdzJ0aDB0MTNhNjAgFw0x
+OTExMDUxMDA0MTJaGA83MDAwMDEwMTAwMDAxMlowKjEoMCYGA1UEAwwfamZhY0Aw
+MWRzMDJxbnNqYmUwMTBtdzJ0aDB0MTNhNjCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAKRbzD+EF4Y1P1amQGK2TYRXfIx0gr2Ua7ZsQb8x+2u3xUN8Vx3w
+E5wX6ltw3P2rvDEjGIYC2mc0urZGnDpUrCDRXRShYETU38BaaPiKz8N4/yYVNo46
+wuA3TuJbMbsgbiX1xOgeWylekGzfw5yg8igyeol3vYwBZ7G90GXuII7/0Orqodkr
++D0n2DWZ8n8f+4qlAP4hAbmhYxhUkqUZ+Mar5DUjbY0RwRqmgWaZXOfEzK03Y5e5
+STbDAtmzwwl3WTYCagJtwlmCWokFcAHK1oDMBMpY9PzCOfduILoxTP5GfPpvPnDs
+i6yM2YDby2Qz32FVtL3/3Q/TwV+306eao88CAwEAAaNAMD4wJQYDVR0RBB4wHIIa
+MDFkczAycW5zamJlMDEwbXcydGgwdDEzYTYwFQYEVR0RAQQNMAugCQYEVR0RAQIB
+ATANBgkqhkiG9w0BAQsFAAOCAQEAEvWxJ8ZEVzVodRcXZADGh+8wf544wjRGOJnC
+Dk9b5zN7Cy/mYA746yO2f7V7JeUyQVzkg0p/3lSY4r+MPFrR+y4+vPZPnRMBWLzJ
+3F3p0+bHlj8NZRcfx830txU9u+TlShBEU9t4LBkZIaLGk7486Uk1j4CS4P1vprJv
++WipZMILv4TlBCiIdu1SI39ZyFRDQFB5R1fQPJ1LrOpJwsQnSiLa8z8onvgbzciL
+OGnkGBQ1wbAGpvODjqCAvgw1zHsNZaUeELH1JvSOk4C0e2RSneGzcV667jtRDNTX
+YoOSSgBBkn9zXmmTNQWrFUtcOuHE9gO9OAuIyAlcb6CBcAMDow==
+-----END CERTIFICATE-----
+2019-11-06T10:10:15Z [✿]  
+2019-11-06T10:10:17Z [✿]  
+2019-11-06T10:10:17Z [✿]  
+2019-11-06T10:10:18Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDITCCAgmgAwIBAgIRAKxhwA7HyECSrnjASE6/JxswDQYJKoZIhvcNAQELBQAw
+KjEoMCYGA1UEAwwfamZhY0AwMWRzMDJxbnNqYmUwMTBtdzJ0aDB0MTNhNjAgFw0x
+OTExMDUxMDA0MTJaGA83MDAwMDEwMTAwMDAxMlowKjEoMCYGA1UEAwwfamZhY0Aw
+MWRzMDJxbnNqYmUwMTBtdzJ0aDB0MTNhNjCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAKRbzD+EF4Y1P1amQGK2TYRXfIx0gr2Ua7ZsQb8x+2u3xUN8Vx3w
+E5wX6ltw3P2rvDEjGIYC2mc0urZGnDpUrCDRXRShYETU38BaaPiKz8N4/yYVNo46
+wuA3TuJbMbsgbiX1xOgeWylekGzfw5yg8igyeol3vYwBZ7G90GXuII7/0Orqodkr
++D0n2DWZ8n8f+4qlAP4hAbmhYxhUkqUZ+Mar5DUjbY0RwRqmgWaZXOfEzK03Y5e5
+STbDAtmzwwl3WTYCagJtwlmCWokFcAHK1oDMBMpY9PzCOfduILoxTP5GfPpvPnDs
+i6yM2YDby2Qz32FVtL3/3Q/TwV+306eao88CAwEAAaNAMD4wJQYDVR0RBB4wHIIa
+MDFkczAycW5zamJlMDEwbXcydGgwdDEzYTYwFQYEVR0RAQQNMAugCQYEVR0RAQIB
+ATANBgkqhkiG9w0BAQsFAAOCAQEAEvWxJ8ZEVzVodRcXZADGh+8wf544wjRGOJnC
+Dk9b5zN7Cy/mYA746yO2f7V7JeUyQVzkg0p/3lSY4r+MPFrR+y4+vPZPnRMBWLzJ
+3F3p0+bHlj8NZRcfx830txU9u+TlShBEU9t4LBkZIaLGk7486Uk1j4CS4P1vprJv
++WipZMILv4TlBCiIdu1SI39ZyFRDQFB5R1fQPJ1LrOpJwsQnSiLa8z8onvgbzciL
+OGnkGBQ1wbAGpvODjqCAvgw1zHsNZaUeELH1JvSOk4C0e2RSneGzcV667jtRDNTX
+YoOSSgBBkn9zXmmTNQWrFUtcOuHE9gO9OAuIyAlcb6CBcAMDow==
+-----END CERTIFICATE-----
+2019-11-06T10:10:18Z [✿]  
+2019-11-06T10:10:20Z [✿]  
+2019-11-06T10:10:20Z [✿]  
+2019-11-06T10:10:21Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDITCCAgmgAwIBAgIRAP4AxN0S1kaepjXd15JYJLkwDQYJKoZIhvcNAQELBQAw
+KjEoMCYGA1UEAwwfamZhY0AwMWRzMDJ0ZnF6emYzazFreWhlOHI1MDU5NDAgFw0x
+OTExMDUxMDA1NDNaGA83MDAwMDEwMTAwMDA0M1owKjEoMCYGA1UEAwwfamZhY0Aw
+MWRzMDJ0ZnF6emYzazFreWhlOHI1MDU5NDCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAMzqFuyboMz8pCeY++qNpJ881j6DCl/tHKoJsYSkXIhgk9N8eAHA
+VrD8/Sd/wY6Rdpys3wVyiGvZdifCOvwNJlDWrctQ/+zbr+aGIaacqlOJmYJX5K85
+gpb40vBOM5Lem1Lab7mw7FEKiF1d63xn1W2Q5IcVceybF35rncfvM26IaD5Upz0S
+9kPEyvUEXUJkxgTV/g/jC3zSgBCac8FURaYHI6WitylGuqbBis/JgXUwxV+pgxhu
+Xzb/WA6I1fyMgqpEd+hJTWOgNXsmV6K13ydsI9TED+mWXFH1M+KWIuw1oGj6Xwaf
+4hIeiQkODc6QuETaciVbFe9gdPl6ZFrVVXMCAwEAAaNAMD4wJQYDVR0RBB4wHIIa
+MDFkczAydGZxenpmM2sxa3loZThyNTA1OTQwFQYEVR0RAQQNMAugCQYEVR0RAQIB
+ATANBgkqhkiG9w0BAQsFAAOCAQEAmArnLR0eP39Yp1baoi27TH8yBfGq0pw4mvKs
+jIgfFhRMNBlPdvDSYEktsSVWihZ7FAG7MZJzfpwHva+iWPOE9qvRtmsXsiW5d6Ob
+e0FycCdtPB8BU/Agylw+fhSxk2Nms3R4ajz0eO+0mUF6WrCxaUbe8y7/x742UBFy
+cxfaqwU+GkXPxUTYd/Qotn4xmXOKCTgzXFOfDF0zzedVonMZwfuaH5fALKi0REav
+NpIGfG1KDgOXQHpPdQyWhJTANeqEh6s7CP8DuRaHgu0LJE5IZrnMz2C3FmmhGVzo
+bUqywRJjYn4WchQZozE4XX2b2LA1iEDj/HeLQdLxpfywQuoU/A==
+-----END CERTIFICATE-----
+2019-11-06T10:10:21Z [✿]  
+2019-11-06T10:10:23Z [✿]  
+2019-11-06T10:10:23Z [✿]  
+2019-11-06T10:10:24Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDITCCAgmgAwIBAgIRAP4AxN0S1kaepjXd15JYJLkwDQYJKoZIhvcNAQELBQAw
+KjEoMCYGA1UEAwwfamZhY0AwMWRzMDJ0ZnF6emYzazFreWhlOHI1MDU5NDAgFw0x
+OTExMDUxMDA1NDNaGA83MDAwMDEwMTAwMDA0M1owKjEoMCYGA1UEAwwfamZhY0Aw
+MWRzMDJ0ZnF6emYzazFreWhlOHI1MDU5NDCCASIwDQYJKoZIhvcNAQEBBQADggEP
+ADCCAQoCggEBAMzqFuyboMz8pCeY++qNpJ881j6DCl/tHKoJsYSkXIhgk9N8eAHA
+VrD8/Sd/wY6Rdpys3wVyiGvZdifCOvwNJlDWrctQ/+zbr+aGIaacqlOJmYJX5K85
+gpb40vBOM5Lem1Lab7mw7FEKiF1d63xn1W2Q5IcVceybF35rncfvM26IaD5Upz0S
+9kPEyvUEXUJkxgTV/g/jC3zSgBCac8FURaYHI6WitylGuqbBis/JgXUwxV+pgxhu
+Xzb/WA6I1fyMgqpEd+hJTWOgNXsmV6K13ydsI9TED+mWXFH1M+KWIuw1oGj6Xwaf
+4hIeiQkODc6QuETaciVbFe9gdPl6ZFrVVXMCAwEAAaNAMD4wJQYDVR0RBB4wHIIa
+MDFkczAydGZxenpmM2sxa3loZThyNTA1OTQwFQYEVR0RAQQNMAugCQYEVR0RAQIB
+ATANBgkqhkiG9w0BAQsFAAOCAQEAmArnLR0eP39Yp1baoi27TH8yBfGq0pw4mvKs
+jIgfFhRMNBlPdvDSYEktsSVWihZ7FAG7MZJzfpwHva+iWPOE9qvRtmsXsiW5d6Ob
+e0FycCdtPB8BU/Agylw+fhSxk2Nms3R4ajz0eO+0mUF6WrCxaUbe8y7/x742UBFy
+cxfaqwU+GkXPxUTYd/Qotn4xmXOKCTgzXFOfDF0zzedVonMZwfuaH5fALKi0REav
+NpIGfG1KDgOXQHpPdQyWhJTANeqEh6s7CP8DuRaHgu0LJE5IZrnMz2C3FmmhGVzo
+bUqywRJjYn4WchQZozE4XX2b2LA1iEDj/HeLQdLxpfywQuoU/A==
+-----END CERTIFICATE-----
+2019-11-06T10:10:24Z [✿]  
+2019-11-06T10:10:26Z [✿]  
+2019-11-06T10:10:26Z [✿]  
+2019-11-06T10:10:26Z [✿]  Setup Federation rules
+2019-11-06T10:10:28Z [✿]  request url is http://104.197.97.57/api/v3/services/access/artifactory/federation ,data is[{"label":"Check if edge-london trusts artifactory","status":"OK"},{"label":"Fetching federation config for edge-london","status":"OK"},{"label":"Fetching federation config for artifactory","status":"OK"},{"label":"Sending new config to edge-london","status":"OK"},{"label":"Sending new config to artifactory","status":"OK"},{"label":"Triggering full broadcast on artifactory for edge-london","status":"OK"}]
+2019-11-06T10:10:30Z [✿]  request url is http://104.197.97.57/api/v3/services/access/edge-london/federation ,data is[{"label":"Check if artifactory trusts edge-london","status":"OK"},{"label":"Fetching federation config for edge-london","status":"OK"},{"label":"Fetching federation config for artifactory","status":"OK"},{"label":"Sending new config to edge-london","status":"OK"},{"label":"Sending new config to artifactory","status":"OK"},{"label":"Triggering full broadcast on edge-london for artifactory","status":"OK"}]
+2019-11-06T10:10:30Z [✿]  Setup Replications
+2019-11-06T10:10:30Z [✿]  Setup Distribution service
+2019-11-06T10:10:34Z [✿]  request url is http://104.197.97.57/api/v3/services ,data is{"name":"distribution","url":"http://35.225.12.218","type":"DISTRIBUTION","service_type":"jfds","service_id":"jfds@01ds02sexgwq97054hxy0y082v","site":{"name":"USA","description":"US West coast site","city":{"name":"Sunnyvale","country_code":"US","latitude":37.36883,"longitude":-122.03635}}}
+2019-11-06T10:10:34Z [✿]  Setup Distribution + Artifactory  gpg keys
+2019-11-06T10:10:34Z [✿]  cmd =gpg --pinentry-mode=loopback --passphrase "" --quiet --batch --no-tty --gen-key	/home/appuser/temp//gen-key-params
+2019-11-06T10:10:34Z [✿]  cmd =gpg --no-tty --list-secret-keys --with-colons 2>/dev/null | tail | awk -F: '/^sec:/ { print $5 } ' | tail -n 1
+2019-11-06T10:10:34Z [✿]  cmd =gpg --armor --export-secret-keys 6866E8CD77C92C4E
+2019-11-06T10:10:34Z [✿]  cmd =gpg --armor --export 6866E8CD77C92C4E
+2019-11-06T10:10:36Z [✿]  request url is http://35.225.12.218/api/v1/keys/pgp ,data is{"message":"Set PGP public & private key","status_code":200}
+2019-11-06T10:10:36Z [✿]  request url is http://23.236.57.109/artifactory/api/security/keys/trusted ,data is{
+  "kid" : "fb7d3e",
+  "fingerprint" : "09:92:f6:b3:46:a4:af:8b:1c:d8:f2:63:68:66:e8:cd:77:c9:2c:4e",
+  "alias" : "artifactoryKey",
+  "key" : "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQENBF3CnBoBCACgbgfcmj0xXuvYTRWqQVMFmPwmxNM4TgnUs8FBa8yyBtbz+rfi\nUYbdZB557lg4hKwhI7yqR+hi7qpCX1c4FHqNLh7MaRxVgxETHKqOnnvVzqqLn4Q3\n2GFNtdeSBLDgji35GjufH/jmjQZUJ552/FsTUifdqlVUHUWc3H3m41asm9cbmr4n\nFhrsA1SmMspbp15ERsJFXPMT7nOAl47PWeW1Aekx06dcOToHE1EDAQzE63cuYXgF\nmR/1JurgF75rGhd4svyMvY1HbJPSzifKgSyfo57en6Fkyvjo/lSTbTOnN7qDkTgv\n2U95VKqbeAiH6PJJTu8Isjo0E+H/QE/DOOljABEBAAG0JFNvbWUgVXNlciAoY29t\nbWVudCkgPHVzZXJAamZyb2cuY29tPokBTgQTAQgAOBYhBAmS9rNGpK+LHNjyY2hm\n6M13ySxOBQJdwpwaAhsvBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGhm6M13\nySxOMpwH/RFydRVguKnoTBqKQ6Oh8Scp2dDsKzYiXdlaelpiOQw98NnxqtpsXgux\nEFnEzJf5L6wXdAoxfo5485THdAb6yvin4O2H+jDGrha8BSqXiTnc597QE6AkEZ4E\nhKLo6O3o8ajbZWbUFuiqADYdUrSGMwTOYAzAW9BO0OJV2Kkd8WQIYBbDCuIy4dvc\n4EGdUAgPEil5TKmqZ4eR6oy1mmyKXjn5Zvw2GIl7AaPDTjRQyC1FmE9BlYquhGP4\nmye3jdRLfF4zE99kFnrEs6cL4Xqv1pGJecX6l5PECbGhNK80+AZ1RTmCMzxQ9gxJ\nYrCwpc7K+hJTPJwk8xeL6fIVoGQJCjk=\n=Rrd3\n-----END PGP PUBLIC KEY BLOCK-----",
+  "issued_on" : "2019-11-06T10:10:34.000Z",
+  "issued_by" : "Some User (comment) <user@jfrog.com>",
+  "valid_until" : "1970-01-01T00:00:00.000Z"
+}2019-11-06T10:10:37Z [✿]  request url is http://34.69.172.171/artifactory/api/security/keys/trusted ,data is{
+  "kid" : "fb7d3e",
+  "fingerprint" : "09:92:f6:b3:46:a4:af:8b:1c:d8:f2:63:68:66:e8:cd:77:c9:2c:4e",
+  "alias" : "edge-londonKey",
+  "key" : "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQENBF3CnBoBCACgbgfcmj0xXuvYTRWqQVMFmPwmxNM4TgnUs8FBa8yyBtbz+rfi\nUYbdZB557lg4hKwhI7yqR+hi7qpCX1c4FHqNLh7MaRxVgxETHKqOnnvVzqqLn4Q3\n2GFNtdeSBLDgji35GjufH/jmjQZUJ552/FsTUifdqlVUHUWc3H3m41asm9cbmr4n\nFhrsA1SmMspbp15ERsJFXPMT7nOAl47PWeW1Aekx06dcOToHE1EDAQzE63cuYXgF\nmR/1JurgF75rGhd4svyMvY1HbJPSzifKgSyfo57en6Fkyvjo/lSTbTOnN7qDkTgv\n2U95VKqbeAiH6PJJTu8Isjo0E+H/QE/DOOljABEBAAG0JFNvbWUgVXNlciAoY29t\nbWVudCkgPHVzZXJAamZyb2cuY29tPokBTgQTAQgAOBYhBAmS9rNGpK+LHNjyY2hm\n6M13ySxOBQJdwpwaAhsvBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGhm6M13\nySxOMpwH/RFydRVguKnoTBqKQ6Oh8Scp2dDsKzYiXdlaelpiOQw98NnxqtpsXgux\nEFnEzJf5L6wXdAoxfo5485THdAb6yvin4O2H+jDGrha8BSqXiTnc597QE6AkEZ4E\nhKLo6O3o8ajbZWbUFuiqADYdUrSGMwTOYAzAW9BO0OJV2Kkd8WQIYBbDCuIy4dvc\n4EGdUAgPEil5TKmqZ4eR6oy1mmyKXjn5Zvw2GIl7AaPDTjRQyC1FmE9BlYquhGP4\nmye3jdRLfF4zE99kFnrEs6cL4Xqv1pGJecX6l5PECbGhNK80+AZ1RTmCMzxQ9gxJ\nYrCwpc7K+hJTPJwk8xeL6fIVoGQJCjk=\n=Rrd3\n-----END PGP PUBLIC KEY BLOCK-----",
+  "issued_on" : "2019-11-06T10:10:34.000Z",
+  "issued_by" : "Some User (comment) <user@jfrog.com>",
+  "valid_until" : "1970-01-01T00:00:00.000Z"
+}2019-11-06T10:10:37Z [✿]  Setup Xray servers
+2019-11-06T10:10:38Z [✿]  request url is http://34.68.140.71/ui/onboardingconfig ,data is
+2019-11-06T10:10:39Z [✿]  request url is http://34.68.140.71/ui/binMgr ,data is{"info":"Artifactory instance has been successfully added"}
+2019-11-06T10:10:39Z [✿]  request url is http://34.68.140.71/api/v1/binMgr/artifactory/repos ,data is{"info":"Repositories list has been successfully sent to Artifactory"}
+2019-11-06T10:10:40Z [✿]  request url is http://34.68.140.71/api/v1/binMgr/artifactory/builds ,data is{"info":"Builds list has been successfully sent to Artifactory"}
+2019-11-06T10:10:40Z [✿]  request url is http://34.68.140.71/api/v1/policies ,data is{"info":"Policy created successfully"}
+2019-11-06T10:10:40Z [✿]  request url is http://34.68.140.71/api/v2/watches ,data is{"error":"Got invalid watch: repository docker-local type local doesn't exist"}
+2019-11-06T10:10:41Z [✿]  request url is http://104.197.97.57/api/v3/services ,data is{"name":"xray-server","url":"http://34.68.140.71","type":"XRAY","service_type":"jfxr","service_id":"jfxr@01ds02wgb0ac9h9qr486fqvr0j","site":{"name":"USA","description":"US West coast site","city":{"name":"Sunnyvale","country_code":"US","latitude":37.36883,"longitude":-122.03635}}}
+2019-11-06T10:10:44Z [✿]  
+2019-11-06T10:10:44Z [✿]  
+2019-11-06T10:10:47Z [✿]  
+2019-11-06T10:10:47Z [✿]  
+2019-11-06T10:10:50Z [✿]  
+2019-11-06T10:10:50Z [✿]  
+2019-11-06T10:10:58Z [✿]  Creating /root/.helm 
+Creating /root/.helm/repository 
+Creating /root/.helm/repository/cache 
+Creating /root/.helm/repository/local 
+Creating /root/.helm/plugins 
+Creating /root/.helm/starters 
+Creating /root/.helm/cache/archive 
+Creating /root/.helm/repository/repositories.yaml 
+Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com 
+Adding local repo with URL: http://127.0.0.1:8879/charts 
+$HELM_HOME has been configured at /root/.helm.
+Not installing Tiller due to 'client-only' flag having been set
+Happy Helming!
+Installed plugin: tiller
+"jfrog" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Skip local chart repository
+...Successfully got an update from the "jfrog" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈ Happy Helming!⎈ 
+NAME                                TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                                     AGE
+artifactory-artifactory             ClusterIP      10.67.254.180   <none>           8081/TCP                                    8m13s
+artifactory-artifactory-nginx       LoadBalancer   10.67.244.2     23.236.57.109    80:31858/TCP,443:30403/TCP                  8m13s
+artifactory-postgresql              ClusterIP      10.67.254.220   <none>           5432/TCP                                    8m13s
+dev-sshd-dev                        LoadBalancer   10.67.253.8     35.223.242.213   2222:30070/TCP                              7m11s
+distribution                        LoadBalancer   10.67.244.142   35.225.12.218    80:30513/TCP                                7m46s
+distribution-postgresql             ClusterIP      10.67.250.194   <none>           5432/TCP                                    7m46s
+edge-london-artifactory             ClusterIP      10.67.243.255   <none>           8081/TCP,6061/TCP                           7m59s
+edge-london-artifactory-nginx       LoadBalancer   10.67.253.154   34.69.172.171    6061:31685/TCP,80:32279/TCP,443:31340/TCP   7m59s
+edge-london-postgresql              ClusterIP      10.67.241.202   <none>           5432/TCP                                    7m59s
+kubernetes                          ClusterIP      10.67.240.1     <none>           443/TCP                                     10m
+mission-control                     LoadBalancer   10.67.243.213   104.197.97.57    80:30963/TCP,9300:30875/TCP                 8m49s
+mission-control-postgresql          ClusterIP      10.67.250.61    <none>           5432/TCP                                    8m50s
+sonarqube-server-postgresql         ClusterIP      10.67.241.79    <none>           5432/TCP                                    7m18s
+sonarqube-server-sonarqube          LoadBalancer   10.67.253.123   35.202.200.228   9000:31941/TCP                              7m18s
+xray-server                         LoadBalancer   10.67.243.198   34.68.140.71     80:31469/TCP                                7m33s
+xray-server-mongodb                 ClusterIP      10.67.240.224   <none>           27017/TCP                                   7m35s
+xray-server-postgresql              ClusterIP      10.67.254.216   <none>           5432/TCP                                    7m35s
+xray-server-rabbitmq-ha             ClusterIP      None            <none>           15672/TCP,5672/TCP,4369/TCP                 7m34s
+xray-server-rabbitmq-ha-discovery   ClusterIP      None            <none>           15672/TCP,5672/TCP,4369/TCP                 7m34s
+xray-server-xray-analysis           ClusterIP      10.67.240.251   <none>           7000/TCP                                    7m34s
+xray-server-xray-indexer            ClusterIP      10.67.247.199   <none>           7002/TCP                                    7m34s
+xray-server-xray-persist            ClusterIP      10.67.255.45    <none>           7003/TCP                                    7m34s
+2019-11-06T10:10:58Z [✿]  Activated service account credentials for: [euser-570@devops-consulting.iam.gserviceaccount.com]
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for danielgerbil-1-cluster.
+2019-11-06T10:10:58Z [✿]  Install GlowRoot Server
+2019-11-06T10:10:58Z [✿]  cmd =helm tiller run -- helm install  --name artifactory-apm  /home/appuser/agent/resources/charts/glowroot
+2019-11-06T10:17:07Z [✿]  Service artifactory-apm-glowroot is ready
+2019-11-06T10:17:28Z [✿]  
+2019-11-06T10:17:28Z [✿]  
+2019-11-06T10:17:29Z [✿]  Archive:  /tmp/glowroot-0.13.4-dist.zip
+   creating: glowroot/
+   creating: glowroot/lib/
+  inflating: glowroot/glowroot.jar
+  inflating: glowroot/LICENSE
+  inflating: glowroot/NOTICE
+  inflating: glowroot/lib/glowroot-embedded-collector.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux-alpine.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-windows.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-osx.jar
+  inflating: glowroot/lib/glowroot-logging-logstash.jar
+2019-11-06T10:17:29Z [✿]  
+2019-11-06T10:17:31Z [✿]  
+2019-11-06T10:17:31Z [✿]  
+2019-11-06T10:17:31Z [✿]  cmd =helm tiller run -- helm upgrade artifactory jfrog/artifactory --version 7.17.1  --set artifactory.javaOpts.other=-javaagent:/var/opt/jfrog/artifactory/glowroot/glowroot.jar  --set postgresql.postgresPassword=zooloo  --set nginx.tlsSecretName=artifactory-tls-secret  --set nginx.customArtifactoryConfigMap=artifactory-nginx-conf
+2019-11-06T10:20:07Z [✿]  Service artifactory-artifactory-nginx is ready
+2019-11-06T10:20:24Z [✿]  
+2019-11-06T10:20:24Z [✿]  
+2019-11-06T10:20:25Z [✿]  Archive:  /tmp/glowroot-0.13.4-dist.zip
+   creating: glowroot/
+   creating: glowroot/lib/
+  inflating: glowroot/glowroot.jar
+  inflating: glowroot/LICENSE
+  inflating: glowroot/NOTICE
+  inflating: glowroot/lib/glowroot-embedded-collector.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux-alpine.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-windows.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-osx.jar
+  inflating: glowroot/lib/glowroot-logging-logstash.jar
+2019-11-06T10:20:25Z [✿]  
+2019-11-06T10:20:27Z [✿]  
+2019-11-06T10:20:27Z [✿]  
+2019-11-06T10:20:27Z [✿]  cmd =helm tiller run -- helm upgrade edge-london jfrog/artifactory --version 7.17.1  --set artifactory.javaOpts.other=-javaagent:/var/opt/jfrog/artifactory/glowroot/glowroot.jar  --set postgresql.postgresPassword=zooloo
+2019-11-06T10:20:46Z [✿]  Service edge-london-artifactory-nginx is ready
+2019-11-06T10:20:46Z [✿]  Download  Vulnerabilities file
+2019-11-06T10:21:32Z [✿]  Upload  Vulnerabilities file to pod xray-server
+2019-11-06T10:22:46Z [✿]  
+2019-11-06T10:22:46Z [✿]  
+2019-11-06T10:22:46Z [✿]  Install Jenkins Server
+2019-11-06T10:22:49Z [✿]  request url is http://35.202.200.228:9000/api/user_tokens/generate ,data is{"login":"admin","name":"admin","token":"3798ba07d193a492e3043449ce30faba8041a54a","createdAt":"2019-11-06T10:22:48+0000"}
+2019-11-06T10:22:49Z [✿]  cmd =helm repo add odavid https://odavid.github.io/k8s-helm-charts
+2019-11-06T10:22:49Z [✿]  cmd =helm tiller run -- helm install  --name jenkins odavid/my-bloody-jenkins -f /home/appuser/temp/config.yml
+2019-11-06T10:25:32Z [✿]  Service jenkins-my-bloody-jenkins is ready
+2019-11-06T10:25:34Z [✿]  request url is http://104.197.97.57/api/v3/services ,data is{"name":"Jenkins","url":"http://35.222.173.1:8080","type":"JENKINS","service_type":"cijn","site":{"name":"USA","description":"US West coast site","city":{"name":"Sunnyvale","country_code":"US","latitude":37.36883,"longitude":-122.03635}}}
+

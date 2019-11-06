@@ -1,0 +1,31 @@
+runMode: devmode
+api:
+  externalUrl:
+  serviceId: jfpip@2019223311
+  token: f562d4fa-cf5f-4d58-8b9b-91ef949c024f
+  artifactory:
+    password: password
+    url:
+    username: admin
+  rabbitMq:
+    uiUserPassword: somepassword
+    userPassword: somepassword
+
+  service:
+    loadBalancerIP:
+    type: LoadBalancer
+www:
+  externalUrl:
+  service:
+    loadBalancerIP:
+    port: 30001
+    type: LoadBalancer
+postgresql:
+  enabled: true
+  postgresqlDatabase: pipelinesdb
+  postgresqlPassword: somepassword
+  postgresqlUsername: apiuser
+nodes:
+  quotaSize: 1
+  poolSize: 1
+  replicaCount: 1

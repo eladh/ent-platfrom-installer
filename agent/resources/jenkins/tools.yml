@@ -1,0 +1,14 @@
+tools:
+  installations:
+    gradle-4.10:
+      type: gradle
+      installers:
+      - id: '4.10.3'
+    maven-3.6.0:
+      type: maven
+      installers:
+        - id: '3.6.0'
+    sonar-server-7.6:
+      type: sonarQubeRunner
+      installers:
+      - id: '3.3.0.1492'

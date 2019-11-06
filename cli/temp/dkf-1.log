@@ -1,0 +1,488 @@
+ -------------
+| GCLOUD INFO |
+ -------------
+Google Cloud SDK [268.0.0]
+
+Platform: [Linux, x86_64] ('Linux', '2854887ad2c6', '4.9.125-linuxkit', '#1 SMP Fri Sep 7 08:20:28 UTC 2018', 'x86_64', '')
+Locale: (None, None)
+Python Version: [2.7.16 (default, May  6 2019, 19:35:26)  [GCC 8.3.0]]
+Python Location: [/usr/bin/python2]
+Site Packages: [Disabled]
+
+Installation Root: [/home/appuser/google-cloud-sdk]
+Installed Components:
+  core: [2019.10.18]
+  beta: [2019.05.17]
+  gsutil: [4.45]
+  bq: [2.0.49]
+System PATH: [/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin]
+Python PATH: [/home/appuser/google-cloud-sdk/lib/third_party:/home/appuser/google-cloud-sdk/lib:/usr/lib/python27.zip:/usr/lib/python2.7:/usr/lib/python2.7/plat-linux2:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload]
+Cloud SDK on PATH: [False]
+Kubectl on PATH: [/usr/local/bin/kubectl]
+
+Installation Properties: [/home/appuser/google-cloud-sdk/properties]
+User Config Directory: [/home/appuser/.config/gcloud]
+Active Configuration Name: [default]
+Active Configuration Path: [/home/appuser/.config/gcloud/configurations/config_default]
+
+Account: [None]
+Project: [None]
+
+Current Properties:
+  [core]
+    disable_usage_reporting: [True]
+
+Logs Directory: [/home/appuser/.config/gcloud/logs]
+Last Log File: [/home/appuser/.config/gcloud/logs/2019.10.29/12.56.35.008832.log]
+
+git: [git version 2.20.1]
+ssh: [OpenSSH_7.9p1, OpenSSL 1.1.1b  26 Feb 2019]
+
+
+ ------------------------
+| KUBECTL CLIENT VERSION |
+ ------------------------
+Client Version: version.Info{Major:"1", Minor:"12", GitVersion:"v1.12.9", GitCommit:"e09f5c40b55c91f681a46ee17f9bc447eeacee57", GitTreeState:"clean", BuildDate:"2019-05-27T16:08:57Z", GoVersion:"go1.10.8", Compiler:"gc", Platform:"linux/amd64"}
+
+ ---------------------
+| HELM CLIENT VERSION |
+ ---------------------
+Client: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
+
+ ----------------
+| AUTHENTICATE  |
+ ----------------
+
+ ----------------
+| RUN           |
+ ----------------
+2019-11-05T14:11:20Z [✿]  start platform install
+2019-11-05T14:11:20Z [✿]  Use configuration file = ./setup.yaml
+2019-11-05T14:11:20Z [✿]  temp dir is /home/appuser/temp/
+2019-11-05T14:11:20Z [✔]  Start GCP init
+2019-11-05T14:11:20Z [✿]  cmd =gcloud auth activate-service-account --key-file=/home/appuser/license.json
+2019-11-05T14:11:21Z [✿]  cmd =gcloud config set compute/zone us-central1-a
+2019-11-05T14:11:21Z [✿]  cmd =gcloud config set project devops-consulting
+2019-11-05T14:11:23Z [✿]  cmd =gcloud services enable compute.googleapis.com
+2019-11-05T14:11:25Z [✿]  cmd =gcloud services enable container.googleapis.com
+2019-11-05T14:11:26Z [✿]  Install Kubernetes Cluster
+2019-11-05T14:11:26Z [✿]  cmd =gcloud deployment-manager deployments create dkf-1-deploy --config /home/appuser/temp/properties.yaml
+2019-11-05T14:14:33Z [✿]  cmd =gcloud container clusters get-credentials dkf-1-cluster  --zone us-central1-a
+2019-11-05T14:14:34Z [✿]  Setup Kubernetes Permissions
+2019-11-05T14:14:34Z [✿]  cmd =kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+2019-11-05T14:14:43Z [✿]  cmd =gcloud services enable cloudbuild.googleapis.com
+2019-11-05T14:14:44Z [✿]  cmd =kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts;
+2019-11-05T14:14:45Z [✿]  Install Helm + Tiller
+2019-11-05T14:14:45Z [✿]  cmd =helm init --client-only
+2019-11-05T14:14:49Z [✿]  cmd =helm plugin install https://github.com/rimusz/helm-tiller --version=0.9.0
+2019-11-05T14:15:51Z [✿]  cmd =helm repo add jfrog https://charts.jfrog.io/
+2019-11-05T14:15:53Z [✿]  cmd =helm repo update
+2019-11-05T14:15:56Z [✿]  Installing Services
+2019-11-05T14:15:56Z [✿]  Install Mission Control
+2019-11-05T14:15:56Z [✿]  cmd =helm tiller run -- helm install  --name mission-control jfrog/mission-control --version 1.1.5 --set mongodb.db.adminPassword=zooloo  --set mongodb.db.insightPassword=zooloo  --set mongodb.db.mcPassword=zooloo  --set postgresql.db.jfisPassword=zooloo  --set postgresql.db.jfscPassword=zooloo  --set postgresql.db.jfexPassword=zooloo  --set postgresql.db.jfmcPassword=zooloo  --set postgresql.persistence.size=10Gi  --set elasticsearch.persistence.size=10Gi  --set missionControl.persistence.size=10Gi  --set postgresql.postgresPassword=zooloo 
+2019-11-05T14:16:12Z [✿]  Install Artifactory Servers
+2019-11-05T14:16:13Z [✿]  cmd =gcloud compute ssh --zone "us-central1-a" gke-dkf-1-cluster-default-pool-781ba797-7n7m --command " sudo su -c ' mkdir -p /etc/docker/certs.d/docker.artifactory.dkf-1.dkf-1' root && echo '-----BEGIN CERTIFICATE-----
+MIIDzzCCAregAwIBAgICBnUwDQYJKoZIhvcNAQELBQAwZzELMAkGA1UEBhMCVVMx
+ETAPBgNVBAcTCHNhbiBmcmFuMRAwDgYDVQQKEwdzb21lT3JnMREwDwYDVQQLEwhz
+b21lVW5pdDEgMB4GA1UEAxMXYXJ0aWZhY3RvcnkuZGtmLTEuZGtmLTEwHhcNMTkx
+MTA1MTQxNjEyWhcNMjkxMTA1MTQxNjEyWjBnMQswCQYDVQQGEwJVUzERMA8GA1UE
+BxMIc2FuIGZyYW4xEDAOBgNVBAoTB3NvbWVPcmcxETAPBgNVBAsTCHNvbWVVbml0
+MSAwHgYDVQQDExdhcnRpZmFjdG9yeS5ka2YtMS5ka2YtMTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAOyuiEkHReMMybhXR+Lscz6Wg/3Hw1haAkYJ9IWF
+G8OLtYqon84b/TodsY5eVT/R0YzCgpv5QCcxdZ8q5Mn5NbChsapsxHK141dRPKgi
+cPV6di3kL7lT0lbxzGb+vgh5x3TLUVUisEgWQ2FIQhfx121lRObvz4sos/2L4wGw
+EkwIG+Qpegh19VtFbm6T+8kUzgatwLX+G9NgU6EGn1jjG1f3bB+wmT9IOoPd8aZq
+6Qp5OUP4L1rhwVZVCD5ONSbOiyD0khAXWvz7slma+WP3y+AuJrBlwy1pte1jgb4b
+T4Yfu/BaNRcjc8YiOd0IMBAIVY1c9I+lOkoo36sDUUo03NsCAwEAAaOBhDCBgTAO
+BgNVHQ8BAf8EBAMCAoQwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMAwG
+A1UdEwEB/wQCMAAwQgYDVR0RBDswOYIXYXJ0aWZhY3RvcnkuZGtmLTEuZGtmLTGC
+HmRvY2tlci5hcnRpZmFjdG9yeS5ka2YtMS5ka2YtMTANBgkqhkiG9w0BAQsFAAOC
+AQEA3gLbaVTHuSG9/zUEABBP6uUASv3Hdl61at/I9McI6VxwwVP57aWA93Z38p22
+NPivM4nfv5uRGCeGS4Nm4Mnh4c5VEF5WktLOhqayprssev+YUP6jehCG58RBV7Hp
+tCIGHDG9rM3kA9xgfjejwH5CVFOA196ggsGubhUr3O0xJt4AuRZFhD6bDOpYlBov
+oIQBUUmB5ID8dA2MjLrpR+8hzFviLIWOn0DokNvYwRMZhTbHUomViIOJkrmmnMEp
+epSIRa73lDrltv5LfXuIm/gBE+E8hTwzrEf5rExpOjQPAPTfAi6VRojNTQwWIESc
+vgQCM6leBvzwwAmQlV2NlOpbVQ==
+-----END CERTIFICATE-----
+' > /tmp/ca.crt && sudo su -c ' mv /tmp/ca.crt /etc/docker/certs.d/docker.artifactory.dkf-1.dkf-1/' root"  </dev/null;2019-11-05T14:16:39Z [✿]  cmd =gcloud compute ssh --zone "us-central1-a" gke-dkf-1-cluster-default-pool-781ba797-pbzs --command " sudo su -c ' mkdir -p /etc/docker/certs.d/docker.artifactory.dkf-1.dkf-1' root && echo '-----BEGIN CERTIFICATE-----
+MIIDzzCCAregAwIBAgICBnUwDQYJKoZIhvcNAQELBQAwZzELMAkGA1UEBhMCVVMx
+ETAPBgNVBAcTCHNhbiBmcmFuMRAwDgYDVQQKEwdzb21lT3JnMREwDwYDVQQLEwhz
+b21lVW5pdDEgMB4GA1UEAxMXYXJ0aWZhY3RvcnkuZGtmLTEuZGtmLTEwHhcNMTkx
+MTA1MTQxNjEyWhcNMjkxMTA1MTQxNjEyWjBnMQswCQYDVQQGEwJVUzERMA8GA1UE
+BxMIc2FuIGZyYW4xEDAOBgNVBAoTB3NvbWVPcmcxETAPBgNVBAsTCHNvbWVVbml0
+MSAwHgYDVQQDExdhcnRpZmFjdG9yeS5ka2YtMS5ka2YtMTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAOyuiEkHReMMybhXR+Lscz6Wg/3Hw1haAkYJ9IWF
+G8OLtYqon84b/TodsY5eVT/R0YzCgpv5QCcxdZ8q5Mn5NbChsapsxHK141dRPKgi
+cPV6di3kL7lT0lbxzGb+vgh5x3TLUVUisEgWQ2FIQhfx121lRObvz4sos/2L4wGw
+EkwIG+Qpegh19VtFbm6T+8kUzgatwLX+G9NgU6EGn1jjG1f3bB+wmT9IOoPd8aZq
+6Qp5OUP4L1rhwVZVCD5ONSbOiyD0khAXWvz7slma+WP3y+AuJrBlwy1pte1jgb4b
+T4Yfu/BaNRcjc8YiOd0IMBAIVY1c9I+lOkoo36sDUUo03NsCAwEAAaOBhDCBgTAO
+BgNVHQ8BAf8EBAMCAoQwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMAwG
+A1UdEwEB/wQCMAAwQgYDVR0RBDswOYIXYXJ0aWZhY3RvcnkuZGtmLTEuZGtmLTGC
+HmRvY2tlci5hcnRpZmFjdG9yeS5ka2YtMS5ka2YtMTANBgkqhkiG9w0BAQsFAAOC
+AQEA3gLbaVTHuSG9/zUEABBP6uUASv3Hdl61at/I9McI6VxwwVP57aWA93Z38p22
+NPivM4nfv5uRGCeGS4Nm4Mnh4c5VEF5WktLOhqayprssev+YUP6jehCG58RBV7Hp
+tCIGHDG9rM3kA9xgfjejwH5CVFOA196ggsGubhUr3O0xJt4AuRZFhD6bDOpYlBov
+oIQBUUmB5ID8dA2MjLrpR+8hzFviLIWOn0DokNvYwRMZhTbHUomViIOJkrmmnMEp
+epSIRa73lDrltv5LfXuIm/gBE+E8hTwzrEf5rExpOjQPAPTfAi6VRojNTQwWIESc
+vgQCM6leBvzwwAmQlV2NlOpbVQ==
+-----END CERTIFICATE-----
+' > /tmp/ca.crt && sudo su -c ' mv /tmp/ca.crt /etc/docker/certs.d/docker.artifactory.dkf-1.dkf-1/' root"  </dev/null;2019-11-05T14:16:44Z [✿]  cmd =helm tiller run -- helm install  --name artifactory jfrog/artifactory --version 7.17.1  --set postgresql.persistence.size=10Gi   --set postgresql.postgresPassword=zooloo  --set nginx.tlsSecretName=artifactory-tls-secret --set nginx.customArtifactoryConfigMap=artifactory-nginx-conf  --set artifactory.loggers[0]=request.log --set artifactory.loggers[1]=event.log --set artifactory.loggers[2]=access.log --set artifactory.loggers[3]=artifactory.log --set artifactory.catalinaLoggers[0]=catalina.log --set nginx.catalinaLoggers[0]=access.log --set nginx.catalinaLoggers[1]=error.log  
+2019-11-05T14:16:57Z [✿]  Install Artifactory Edge Servers
+2019-11-05T14:16:57Z [✿]  Install Edge Servers
+2019-11-05T14:16:57Z [✿]  cmd =helm tiller run -- helm install  --name edge-london jfrog/artifactory --version 7.17.1  --set postgresql.postgresPassword=zooloo   --set artifactory.replicator.enabled=true   --set artifactory.replicator.publicUrl=http://localhost:6061   --set artifactory.loggers[0]=request.log --set artifactory.loggers[1]=event.log --set artifactory.loggers[2]=access.log --set artifactory.loggers[3]=artifactory.log --set artifactory.catalinaLoggers[0]=catalina.log --set nginx.catalinaLoggers[0]=access.log --set nginx.catalinaLoggers[1]=error.log 
+2019-11-05T14:17:12Z [✿]  Install Distribution Server
+2019-11-05T14:17:12Z [✿]  cmd =helm tiller run -- helm install  --name distribution jfrog/distribution --version 3.4.0  --set distributor.loggers[0]=distributor.log  --set distributor.loggers[1]=foreman.log  --set distribution.loggers[0]=access.log  --set distribution.loggers[1]=distribution.log  --set distribution.loggers[2]=request.log 
+2019-11-05T14:17:22Z [✿]  Install Xray Servers
+2019-11-05T14:17:22Z [✿]  cmd =helm tiller run -- helm install  --name xray-server jfrog/xray --version 1.0.5 --set common.xrayConfig.indexAllBuilds=true
+2019-11-05T14:17:40Z [✿]  Install SonarQube Server
+2019-11-05T14:17:40Z [✿]  cmd =helm tiller run -- helm install  --name sonarqube-server stable/sonarqube --version 0.15.0 
+2019-11-05T14:17:50Z [✿]  cmd =helm tiller run -- helm install  --name dev  /home/appuser/agent/resources/charts/dev/chart
+2019-11-05T14:19:54Z [✿]  Service artifactory-artifactory-nginx is ready
+2019-11-05T14:20:41Z [✿]  Service edge-london-artifactory-nginx is ready
+2019-11-05T14:20:42Z [✿]  Service distribution is ready
+2019-11-05T14:22:03Z [✿]  Service mission-control is ready
+2019-11-05T14:22:31Z [✿]  Service xray-server is ready
+2019-11-05T14:22:33Z [✿]  Service sonarqube-server-sonarqube is ready
+2019-11-05T14:22:33Z [✿]  finished waiting for install
+2019-11-05T14:22:33Z [✿]  Setup Services
+2019-11-05T14:22:33Z [✿]  Setup Mission Control
+2019-11-05T14:22:33Z [✿]  Setup Mission Control base url
+2019-11-05T14:22:36Z [✿]  request url is http://34.70.242.102/api/v3/settings/base_url ,data is
+2019-11-05T14:22:36Z [✿]  Load Mission Control buckets
+2019-11-05T14:22:37Z [✿]  Load Mission Control sites
+2019-11-05T14:22:39Z [✿]  request url is http://34.70.242.102/api/v3/sites ,data is{"name":"USA","description":"US West coast site","city":{"name":"Sunnyvale","country_code":"US","latitude":37.36883,"longitude":-122.03635},"services":[]}
+2019-11-05T14:22:39Z [✿]  request url is http://34.70.242.102/api/v3/sites ,data is{"name":"England","description":"Europe West site","city":{"name":"London","country_code":"GB","latitude":51.5074,"longitude":0.1278},"services":[]}
+2019-11-05T14:22:39Z [✿]  Setup Artifactory servers
+2019-11-05T14:22:39Z [✿]  create dns for domain artifactory.dkf-1.dkf-1.
+2019-11-05T14:22:40Z [✿]  cmd =gcloud beta dns --project=devops-consulting managed-zones create dkf-1 --description="new zone" --dns-name="dkf-1.dkf-1." --visibility="private" --networks "default"
+2019-11-05T14:22:43Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction start --zone=dkf-1
+2019-11-05T14:22:44Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction add 35.225.18.138 --name=artifactory.dkf-1.dkf-1. --ttl=300 --type=A --zone=dkf-1
+2019-11-05T14:22:44Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction add 35.225.18.138 --name=docker.artifactory.dkf-1.dkf-1. --ttl=300 --type=A --zone=dkf-1
+2019-11-05T14:22:44Z [✿]  cmd =gcloud dns --project=devops-consulting record-sets transaction execute --zone=dkf-1
+2019-11-05T14:22:46Z [✿]  request url is http://34.70.242.102/api/v3/attach_lic/buckets/enterprise-licenses ,data is{"errors":[{"type":"Exception","message":"The entity 'LicenseBucket' with identifier 'enterprise-licenses' was not found"}]}
+2019-11-05T14:22:47Z [✿]  request url is http://35.225.18.138:80/artifactory/api/system/licenses ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "No license key supplied."
+  } ]
+}2019-11-05T14:22:49Z [✿]  request url is http://34.70.242.102/api/v3/services ,data is{"errors":[{"type":"Validation","message":"The license provided is either invalid or has expired."}]}
+2019-11-05T14:22:49Z [✿]  Setup Edge nodes
+2019-11-05T14:22:50Z [✿]  request url is http://34.70.242.102/api/v3/attach_lic/buckets/edge-licenses ,data is{"errors":[{"type":"Exception","message":"The entity 'LicenseBucket' with identifier 'edge-licenses' was not found"}]}
+2019-11-05T14:22:50Z [✿]  request url is http://35.184.27.171:80/artifactory/api/system/licenses ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "No license key supplied."
+  } ]
+}2019-11-05T14:22:51Z [✿]  request url is http://34.70.242.102/api/v3/services ,data is{"errors":[{"type":"Exception","message":"Authentication Provider not found"}]}
+2019-11-05T14:22:51Z [✿]  Add artifactory repositories
+2019-11-05T14:22:52Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/gradle-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:52Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/gradle-remote ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:52Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/gradle ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:53Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/docker-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:53Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/docker-remote ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:53Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/docker ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:53Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/docker-prod-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:54Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/docker-prod ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:54Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/npm-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:54Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/npm-remote ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:55Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/npm ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:55Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/helm-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:56Z [✿]  request url is http://35.225.18.138/artifactory/api/repositories/helm ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:56Z [✿]  request url is http://35.184.27.171/artifactory/api/repositories/docker-prod-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:56Z [✿]  request url is http://35.184.27.171/artifactory/api/repositories/docker-prod ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:57Z [✿]  request url is http://35.184.27.171/artifactory/api/repositories/helm-local ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:57Z [✿]  request url is http://35.184.27.171/artifactory/api/repositories/helm ,data is{
+  "errors" : [ {
+    "status" : 400,
+    "message" : "This REST API is available only in Artifactory Pro (see: jfrog.com/artifactory/features). If you are already running Artifactory Pro please make sure your server is activated with a valid license key.\n"
+  } ]
+}2019-11-05T14:22:57Z [✿]  Setup Circle of trust between all nodes
+2019-11-05T14:22:58Z [✿]  /opt/jfrog/artifactory
+2019-11-05T14:22:58Z [✿]  
+2019-11-05T14:23:00Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDIDCCAgigAwIBAgIQbnSKkschSPKqW4UdYOGKQTANBgkqhkiG9w0BAQsFADAq
+MSgwJgYDVQQDDB9qZmFjQDAxZHJ4eXc2MnYzY2FzMG5idzhtYW4xY203MCAXDTE5
+MTEwNDE0MTgxNVoYDzcwMDAwMTAxMDAwMDE1WjAqMSgwJgYDVQQDDB9qZmFjQDAx
+ZHJ4eXc2MnYzY2FzMG5idzhtYW4xY203MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAyLQQjNjBCH6E/sJejaslBb659Qck9YeZPl0LRVhLKCrSrsC4y6Pe
+rGiZ+2ZZ98ijuZz5JUgQZYEimZr7mAo42P2QBlsUpstMTqNAu6i1iV2xhSSzrM9o
+BtfUBJtshnKuI8LbHDrxeits+kfdUSi5sZWzbETVFS+GaNdarw9gq1TD7lxnCiWG
+XYUkIfMfS81ULfWxSwHqKXUy22HJMYlnNPks7IgvuXcK7Ze5fpTfV8VyP6PyCiN9
+TmTCFvqM6KUrsiOPCC/oGLLct4rOU7LS28pHQ+V5JrQPtTlG4DsCWJwaHtbmwsjQ
+0JfsOsi2HzIu3VSsxAihVa9HXYh96hoMDQIDAQABo0AwPjAlBgNVHREEHjAcghow
+MWRyeHl3NjJ2M2NhczBuYnc4bWFuMWNtNzAVBgRVHREBBA0wC6AJBgRVHREBAgEB
+MA0GCSqGSIb3DQEBCwUAA4IBAQBTODEWkhMsTr32OhrG+byO2dFTlc41LLPB5K4u
+xUHMsNTnm6xl0hVmjupIk9yqr/p4WLl9pv6j6vnu9W0TMSsRqFIBUueJMX3UMywS
+89xvEcsL45VNPtY+UbVMzfIR0Ek0XaZcY8E+ElgaXx25evYVCzOQtJ+9WDBou7js
+pdS6qDHn+Mvd+upCzcnnWO/jjopywQEqA2btexYw8hotZVtKPUFtth8vE4dJaItc
+VzfOvPHBgpLqz4Ia5om5eyRA6dCA5YpGSJYVlsD0Lc9bpnZsGA2qvtNJl0P7FuA6
+IO25osDOkfG/exJeeVUK4ep8tSKNL2t6NO2FJ6SQpLz8R59x
+-----END CERTIFICATE-----
+2019-11-05T14:23:00Z [✿]  
+2019-11-05T14:23:02Z [✿]  
+2019-11-05T14:23:02Z [✿]  
+2019-11-05T14:23:03Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDIDCCAgigAwIBAgIQbnSKkschSPKqW4UdYOGKQTANBgkqhkiG9w0BAQsFADAq
+MSgwJgYDVQQDDB9qZmFjQDAxZHJ4eXc2MnYzY2FzMG5idzhtYW4xY203MCAXDTE5
+MTEwNDE0MTgxNVoYDzcwMDAwMTAxMDAwMDE1WjAqMSgwJgYDVQQDDB9qZmFjQDAx
+ZHJ4eXc2MnYzY2FzMG5idzhtYW4xY203MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAyLQQjNjBCH6E/sJejaslBb659Qck9YeZPl0LRVhLKCrSrsC4y6Pe
+rGiZ+2ZZ98ijuZz5JUgQZYEimZr7mAo42P2QBlsUpstMTqNAu6i1iV2xhSSzrM9o
+BtfUBJtshnKuI8LbHDrxeits+kfdUSi5sZWzbETVFS+GaNdarw9gq1TD7lxnCiWG
+XYUkIfMfS81ULfWxSwHqKXUy22HJMYlnNPks7IgvuXcK7Ze5fpTfV8VyP6PyCiN9
+TmTCFvqM6KUrsiOPCC/oGLLct4rOU7LS28pHQ+V5JrQPtTlG4DsCWJwaHtbmwsjQ
+0JfsOsi2HzIu3VSsxAihVa9HXYh96hoMDQIDAQABo0AwPjAlBgNVHREEHjAcghow
+MWRyeHl3NjJ2M2NhczBuYnc4bWFuMWNtNzAVBgRVHREBBA0wC6AJBgRVHREBAgEB
+MA0GCSqGSIb3DQEBCwUAA4IBAQBTODEWkhMsTr32OhrG+byO2dFTlc41LLPB5K4u
+xUHMsNTnm6xl0hVmjupIk9yqr/p4WLl9pv6j6vnu9W0TMSsRqFIBUueJMX3UMywS
+89xvEcsL45VNPtY+UbVMzfIR0Ek0XaZcY8E+ElgaXx25evYVCzOQtJ+9WDBou7js
+pdS6qDHn+Mvd+upCzcnnWO/jjopywQEqA2btexYw8hotZVtKPUFtth8vE4dJaItc
+VzfOvPHBgpLqz4Ia5om5eyRA6dCA5YpGSJYVlsD0Lc9bpnZsGA2qvtNJl0P7FuA6
+IO25osDOkfG/exJeeVUK4ep8tSKNL2t6NO2FJ6SQpLz8R59x
+-----END CERTIFICATE-----
+2019-11-05T14:23:03Z [✿]  
+2019-11-05T14:23:05Z [✿]  
+2019-11-05T14:23:05Z [✿]  
+2019-11-05T14:23:06Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDIDCCAgigAwIBAgIQKJIHBlwZSoGAZ40k2SlLZzANBgkqhkiG9w0BAQsFADAq
+MSgwJgYDVQQDDB9qZmFjQDAxZHJ4eXlzdmRkZTVxMTgxMHJya20wYXl6MCAXDTE5
+MTEwNDE0MTk0MVoYDzcwMDAwMTAxMDAwMDQwWjAqMSgwJgYDVQQDDB9qZmFjQDAx
+ZHJ4eXlzdmRkZTVxMTgxMHJya20wYXl6MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAo2Xiji+V4zpQ4w83tLb27IHJDZ+UcbDZAn/CnBK76Qzi60llpMd6
+9Udp20p8gde2fByy6F1DV02pVbHMoXLwGVFt3qCti6oa++0ScoS0cR1J4tGjzShm
+bgYDBmUF+lb3LtPitZbF+H92weHzisLOJsUcp6ehIikG6Zv9vOl1kVx5xqR5w/sp
+h8AhOmVocJy4WTzXGcBqKJzFZa3J4Hx9S3QgJ5X6V37Yw1ot4f4N6rLcU7IuOtm/
+ZSA6mkyZy8DFBBvdDmZOIS+0SIACLGMSZH5ad7k+Cmk2IRXBLp3PB9gvsAfE+x4G
+isiDVMKFoa+M4ppTytT6yTKNDlA4v8B6qQIDAQABo0AwPjAlBgNVHREEHjAcghow
+MWRyeHl5c3ZkZGU1cTE4MTBycmttMGF5ejAVBgRVHREBBA0wC6AJBgRVHREBAgEB
+MA0GCSqGSIb3DQEBCwUAA4IBAQAOYOkX0w72QQxb4821BtoYRtCfffT8SZe1pwaJ
+SOAQaYzvxHyb+fwBDlJ/mkLj2PuIAz/puot5FlU+j9kMzQm0p0KD1sgO7zWQzxQ4
+igdPm3m7slMZ93fUQBa9s83Ht55eTG/EFTqpcFWY6nRKtHDy+9yioSuF7h7fvVeP
+ZXI2cn9u6ISpQCIMh2SihCy5l2otSUM6rSgBsFFGIHy5Piqw2yclhwKZlYJpxpUP
+CPBSiZSorwSAlx6lS+u5UyYe7Kws3FXEPrV/DAtPbnXWOw9hiiSlI8qBtJKBMin1
+l3Mpp8jvBIuAeQ86VFBcCuU53jJTQ9/M5sMg7dRAPF4dhJsE
+-----END CERTIFICATE-----
+2019-11-05T14:23:06Z [✿]  
+2019-11-05T14:23:08Z [✿]  
+2019-11-05T14:23:08Z [✿]  
+2019-11-05T14:23:10Z [✿]  -----BEGIN CERTIFICATE-----
+MIIDIDCCAgigAwIBAgIQKJIHBlwZSoGAZ40k2SlLZzANBgkqhkiG9w0BAQsFADAq
+MSgwJgYDVQQDDB9qZmFjQDAxZHJ4eXlzdmRkZTVxMTgxMHJya20wYXl6MCAXDTE5
+MTEwNDE0MTk0MVoYDzcwMDAwMTAxMDAwMDQwWjAqMSgwJgYDVQQDDB9qZmFjQDAx
+ZHJ4eXlzdmRkZTVxMTgxMHJya20wYXl6MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAo2Xiji+V4zpQ4w83tLb27IHJDZ+UcbDZAn/CnBK76Qzi60llpMd6
+9Udp20p8gde2fByy6F1DV02pVbHMoXLwGVFt3qCti6oa++0ScoS0cR1J4tGjzShm
+bgYDBmUF+lb3LtPitZbF+H92weHzisLOJsUcp6ehIikG6Zv9vOl1kVx5xqR5w/sp
+h8AhOmVocJy4WTzXGcBqKJzFZa3J4Hx9S3QgJ5X6V37Yw1ot4f4N6rLcU7IuOtm/
+ZSA6mkyZy8DFBBvdDmZOIS+0SIACLGMSZH5ad7k+Cmk2IRXBLp3PB9gvsAfE+x4G
+isiDVMKFoa+M4ppTytT6yTKNDlA4v8B6qQIDAQABo0AwPjAlBgNVHREEHjAcghow
+MWRyeHl5c3ZkZGU1cTE4MTBycmttMGF5ejAVBgRVHREBBA0wC6AJBgRVHREBAgEB
+MA0GCSqGSIb3DQEBCwUAA4IBAQAOYOkX0w72QQxb4821BtoYRtCfffT8SZe1pwaJ
+SOAQaYzvxHyb+fwBDlJ/mkLj2PuIAz/puot5FlU+j9kMzQm0p0KD1sgO7zWQzxQ4
+igdPm3m7slMZ93fUQBa9s83Ht55eTG/EFTqpcFWY6nRKtHDy+9yioSuF7h7fvVeP
+ZXI2cn9u6ISpQCIMh2SihCy5l2otSUM6rSgBsFFGIHy5Piqw2yclhwKZlYJpxpUP
+CPBSiZSorwSAlx6lS+u5UyYe7Kws3FXEPrV/DAtPbnXWOw9hiiSlI8qBtJKBMin1
+l3Mpp8jvBIuAeQ86VFBcCuU53jJTQ9/M5sMg7dRAPF4dhJsE
+-----END CERTIFICATE-----
+2019-11-05T14:23:10Z [✿]  
+2019-11-05T14:23:11Z [✿]  
+2019-11-05T14:23:11Z [✿]  
+2019-11-05T14:23:11Z [✿]  Setup Federation rules
+2019-11-05T14:23:12Z [✿]  request url is http://34.70.242.102/api/v3/services/access/artifactory/federation ,data is{"errors":[{"type":"Exception","message":"No appropriate license: this functionality is only available with Enterprise+ licenses"}]}
+2019-11-05T14:23:12Z [✿]  request url is http://34.70.242.102/api/v3/services/access/edge-london/federation ,data is{"errors":[{"type":"Exception","message":"No appropriate license: this functionality is only available with Enterprise+ licenses"}]}
+2019-11-05T14:23:12Z [✿]  Setup Replications
+2019-11-05T14:23:12Z [✿]  Setup Distribution service
+2019-11-05T14:23:13Z [✿]  request url is http://34.70.242.102/api/v3/services ,data is{"errors":[{"type":"Exception","message":"No appropriate license: this functionality is only available with Enterprise+ licenses"}]}
+2019-11-05T14:23:13Z [✿]  Setup Distribution + Artifactory  gpg keys
+2019-11-05T14:23:13Z [✿]  cmd =gpg --pinentry-mode=loopback --passphrase "" --quiet --batch --no-tty --gen-key	/home/appuser/temp//gen-key-params
+2019-11-05T14:23:14Z [✿]  cmd =gpg --no-tty --list-secret-keys --with-colons 2>/dev/null | tail | awk -F: '/^sec:/ { print $5 } ' | tail -n 1
+2019-11-05T14:23:14Z [✿]  cmd =gpg --armor --export-secret-keys CAAE02BAC66051B4
+2019-11-05T14:23:14Z [✿]  cmd =gpg --armor --export CAAE02BAC66051B4
+2019-11-05T14:23:14Z [✿]  request url is http://34.67.42.140/api/v1/keys/pgp ,data is{"message":"Authentication provider setup is required.","status_code":401}
+2019-11-05T14:23:14Z [✿]  request url is http://35.225.18.138/artifactory/api/security/keys/trusted ,data is{
+  "errors" : [ {
+    "status" : 503,
+    "message" : "No license installed!"
+  } ]
+}2019-11-05T14:23:15Z [✿]  request url is http://35.184.27.171/artifactory/api/security/keys/trusted ,data is{
+  "errors" : [ {
+    "status" : 503,
+    "message" : "No license installed!"
+  } ]
+}2019-11-05T14:23:15Z [✿]  Setup Xray servers
+2019-11-05T14:23:16Z [✿]  request url is http://35.192.165.215/ui/onboardingconfig ,data is
+2019-11-05T14:23:17Z [✿]  request url is http://35.192.165.215/ui/binMgr ,data is{"error":"Failed to validate Artifactory license"}
+2019-11-05T14:23:17Z [✿]  request url is http://35.192.165.215/api/v1/binMgr/artifactory/repos ,data is{"error":"Failed to send repositories to Artifactory"}
+2019-11-05T14:23:17Z [✿]  request url is http://35.192.165.215/api/v1/binMgr/artifactory/builds ,data is{"error":"Failed to set binary manager builds for index"}
+2019-11-05T14:23:17Z [✿]  request url is http://35.192.165.215/api/v1/policies ,data is
+2019-11-05T14:23:18Z [✿]  request url is http://35.192.165.215/api/v2/watches ,data is
+2019-11-05T14:23:19Z [✿]  request url is http://34.70.242.102/api/v3/services ,data is{"errors":[{"type":"Exception","message":"Cannot add the service 'xray-server' because the Authentication Provider is not available."}]}
+2019-11-05T14:23:21Z [✿]  
+2019-11-05T14:23:21Z [✿]  
+2019-11-05T14:23:23Z [✿]  
+2019-11-05T14:23:23Z [✿]  
+2019-11-05T14:23:24Z [✿]  
+2019-11-05T14:23:24Z [✿]  
+2019-11-05T14:23:33Z [✿]  Creating /root/.helm 
+Creating /root/.helm/repository 
+Creating /root/.helm/repository/cache 
+Creating /root/.helm/repository/local 
+Creating /root/.helm/plugins 
+Creating /root/.helm/starters 
+Creating /root/.helm/cache/archive 
+Creating /root/.helm/repository/repositories.yaml 
+Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com 
+Adding local repo with URL: http://127.0.0.1:8879/charts 
+$HELM_HOME has been configured at /root/.helm.
+Not installing Tiller due to 'client-only' flag having been set
+Happy Helming!
+Installed plugin: tiller
+"jfrog" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Skip local chart repository
+...Successfully got an update from the "jfrog" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈ Happy Helming!⎈ 
+NAME                                TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                                     AGE
+artifactory-artifactory             ClusterIP      10.31.242.236   <none>           8081/TCP                                    6m43s
+artifactory-artifactory-nginx       LoadBalancer   10.31.244.133   35.225.18.138    80:31806/TCP,443:32010/TCP                  6m42s
+artifactory-postgresql              ClusterIP      10.31.255.68    <none>           5432/TCP                                    6m43s
+dev-sshd-dev                        LoadBalancer   10.31.247.170   34.67.105.57     2222:30516/TCP                              5m40s
+distribution                        LoadBalancer   10.31.247.207   34.67.42.140     80:31123/TCP                                6m15s
+distribution-postgresql             ClusterIP      10.31.251.169   <none>           5432/TCP                                    6m15s
+edge-london-artifactory             ClusterIP      10.31.248.21    <none>           8081/TCP,6061/TCP                           6m28s
+edge-london-artifactory-nginx       LoadBalancer   10.31.253.96    35.184.27.171    6061:31686/TCP,80:30513/TCP,443:30166/TCP   6m28s
+edge-london-postgresql              ClusterIP      10.31.240.114   <none>           5432/TCP                                    6m28s
+kubernetes                          ClusterIP      10.31.240.1     <none>           443/TCP                                     9m30s
+mission-control                     LoadBalancer   10.31.251.66    34.70.242.102    80:30404/TCP,9300:30841/TCP                 7m26s
+mission-control-postgresql          ClusterIP      10.31.254.117   <none>           5432/TCP                                    7m26s
+sonarqube-server-postgresql         ClusterIP      10.31.254.53    <none>           5432/TCP                                    5m46s
+sonarqube-server-sonarqube          LoadBalancer   10.31.241.38    35.184.85.245    9000:32129/TCP                              5m46s
+xray-server                         LoadBalancer   10.31.251.132   35.192.165.215   80:32419/TCP                                6m3s
+xray-server-mongodb                 ClusterIP      10.31.246.109   <none>           27017/TCP                                   6m4s
+xray-server-postgresql              ClusterIP      10.31.254.64    <none>           5432/TCP                                    6m4s
+xray-server-rabbitmq-ha             ClusterIP      None            <none>           15672/TCP,5672/TCP,4369/TCP                 6m3s
+xray-server-rabbitmq-ha-discovery   ClusterIP      None            <none>           15672/TCP,5672/TCP,4369/TCP                 6m4s
+xray-server-xray-analysis           ClusterIP      10.31.241.119   <none>           7000/TCP                                    6m3s
+xray-server-xray-indexer            ClusterIP      10.31.251.28    <none>           7002/TCP                                    6m3s
+xray-server-xray-persist            ClusterIP      10.31.254.255   <none>           7003/TCP                                    6m3s
+2019-11-05T14:23:33Z [✿]  Activated service account credentials for: [euser-570@devops-consulting.iam.gserviceaccount.com]
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for dkf-1-cluster.
+2019-11-05T14:23:33Z [✿]  Install GlowRoot Server
+2019-11-05T14:23:33Z [✿]  cmd =helm tiller run -- helm install  --name artifactory-apm  /home/appuser/agent/resources/charts/glowroot
+2019-11-05T14:26:14Z [✿]  Service artifactory-apm-glowroot is ready
+2019-11-05T14:26:39Z [✿]  
+2019-11-05T14:26:39Z [✿]  
+2019-11-05T14:26:41Z [✿]  Archive:  /tmp/glowroot-0.13.4-dist.zip
+   creating: glowroot/
+   creating: glowroot/lib/
+  inflating: glowroot/glowroot.jar
+  inflating: glowroot/LICENSE
+  inflating: glowroot/NOTICE
+  inflating: glowroot/lib/glowroot-embedded-collector.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux-alpine.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-windows.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-osx.jar
+  inflating: glowroot/lib/glowroot-logging-logstash.jar
+2019-11-05T14:26:41Z [✿]  
+2019-11-05T14:26:43Z [✿]  
+2019-11-05T14:26:43Z [✿]  
+2019-11-05T14:26:43Z [✿]  cmd =helm tiller run -- helm upgrade artifactory jfrog/artifactory --version 7.17.1 --set artifactory.javaOpts.other=-javaagent:/var/opt/jfrog/artifactory/glowroot/glowroot.jar --set postgresql.postgresPassword=zooloo
+2019-11-05T14:29:36Z [✿]  Service artifactory-artifactory-nginx is ready
+2019-11-05T14:29:44Z [✿]  
+2019-11-05T14:29:44Z [✿]  
+2019-11-05T14:29:46Z [✿]  Archive:  /tmp/glowroot-0.13.4-dist.zip
+   creating: glowroot/
+   creating: glowroot/lib/
+  inflating: glowroot/glowroot.jar
+  inflating: glowroot/LICENSE
+  inflating: glowroot/NOTICE
+  inflating: glowroot/lib/glowroot-embedded-collector.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-linux-alpine.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-windows.jar
+  inflating: glowroot/lib/glowroot-central-collector-https-osx.jar
+  inflating: glowroot/lib/glowroot-logging-logstash.jar
+2019-11-05T14:29:46Z [✿]  
+2019-11-05T14:29:48Z [✿]  
+2019-11-05T14:29:48Z [✿]  
+2019-11-05T14:29:48Z [✿]  cmd =helm tiller run -- helm upgrade edge-london jfrog/artifactory --version 7.17.1 --set artifactory.javaOpts.other=-javaagent:/var/opt/jfrog/artifactory/glowroot/glowroot.jar --set postgresql.postgresPassword=zooloo
+2019-11-05T14:30:07Z [✿]  Service edge-london-artifactory-nginx is ready
+2019-11-05T14:30:07Z [✿]  Download  Vulnerabilities file
+2019-11-05T14:30:27Z [✿]  Upload  Vulnerabilities file to pod xray-server
+2019-11-05T14:31:45Z [✿]  
+2019-11-05T14:31:45Z [✿]  
+2019-11-05T14:31:45Z [✿]  Install Jenkins Server
+2019-11-05T14:31:47Z [✿]  request url is http://35.184.85.245:9000/api/user_tokens/generate ,data is{"login":"admin","name":"admin","token":"3f3696a6a54a0022b6792c174f0db6a4e4c2a2a4","createdAt":"2019-11-05T14:31:46+0000"}
+2019-11-05T14:31:47Z [✿]  cmd =helm repo add odavid https://odavid.github.io/k8s-helm-charts
+2019-11-05T14:31:48Z [✿]  cmd =helm tiller run -- helm install  --name jenkins odavid/my-bloody-jenkins -f /home/appuser/temp/config.yml
+2019-11-05T14:38:15Z [✿]  Service jenkins-my-bloody-jenkins is ready
+2019-11-05T14:38:15Z [✿]  request url is http://34.70.242.102/api/v3/services ,data is{"errors":[{"type":"Exception","message":"No appropriate license: this functionality is only available with Enterprise+ licenses"}]}
+

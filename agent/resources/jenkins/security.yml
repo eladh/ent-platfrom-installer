@@ -1,0 +1,6 @@
+security:
+  realm: jenkins_database
+  adminPassword: ${JENKINS_ADMIN_PASSWORD}
+
+  data:
+  - ''

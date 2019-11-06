@@ -1,0 +1,17 @@
+artifactory:
+  ## Should be true
+  useCredentialsPlugin: true
+  ## List of artifactory servers
+  artifactoryServers:
+  - serverId: artifactory
+    artifactoryUrl: ${ARTIFACTORY_URL}/artifactory
+    # default false
+    bypassProxy: true
+    # default 3
+    connectionRetry: 10
+    # default 300
+    timeout: 200
+    # use credentialsId
+    deployerCredentialsConfig:
+      credentialsId: 'artifactorypass'
+    # if omitted same as deployerCredentialsConfig

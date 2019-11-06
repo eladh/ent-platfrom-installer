@@ -1,0 +1,22 @@
+job_dsl_scripts:
+  - |
+    def projects ,jobName ,repo ,jenkinsFilePath;
+    scriptTemplate
+
+# Using new URI inside one of the jobs for finding proxy settings
+script_approval:
+  approvals:
+    - method java.net.URI getHost
+    - method java.io.File getAbsolutePath
+    - method java.net.URI getPort
+    - new java.net.URI java.lang.String
+    - new java.util.HashMap java.util.Map
+    - method java.net.URI getHost
+    - method java.net.URI getPort
+    - method java.io.File deleteOnExit
+    - staticMethod java.io.File createTempFile java.lang.String java.lang.String
+    - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.io.File java.lang.Object
+    - staticMethod org.codehaus.groovy.runtime.ProcessGroovyMethods getText java.lang.Process
+    - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods execute java.util.List
+    - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods execute java.lang.String
+    - method org.jfrog.hudson.pipeline.common.types.XrayScanResult isFoundVulnerable

@@ -1,0 +1,16 @@
+FROM golang:1.12.6 AS golang-builder
+
+WORKDIR /
+
+# Copy Makefile first, it will save time during development.
+COPY controller/Makefile ./Makefile
+
+# Install deps
+RUN make setup
+
+# Copy all project files
+COPY common /common
+COPY controller /
+
+#Generate a binary
+RUN make build

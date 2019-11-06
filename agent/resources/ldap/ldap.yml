@@ -1,0 +1,82 @@
+env:
+  LDAP_ORGANISATION: "Example Inc."
+  LDAP_DOMAIN: "example.org"
+  LDAP_TLS: "false"
+  LDAP_TLS_ENFORCE: "false"
+
+customLdifFiles:
+  01-default-users.ldif: |-
+    dn: ou=users,dc=example,dc=org
+    changetype: add
+    objectclass: top
+    objectclass: organizationalUnit
+    ou: users
+
+    dn: ou=groups,dc=example,dc=org
+    changetype: add
+    objectclass: top
+    objectclass: organizationalUnit
+    ou: groups
+
+    dn: cn=developers,ou=groups,dc=example,dc=org
+    changetype: add
+    cn: developers
+    objectclass: top
+    objectClass: groupOfNames
+    member: uid=bob.dylan,ou=users,dc=example,dc=org
+    member: uid=james.dean,ou=users,dc=example,dc=org
+    member: uid=jenkins.admin,ou=users,dc=example,dc=org
+
+    dn: cn=team-leaders,ou=groups,dc=example,dc=org
+    changetype: add
+    cn: team-leaders
+    objectclass: top
+    objectClass: groupOfNames
+    member: uid=bob.dylan,ou=users,dc=example,dc=org
+
+    dn: cn=jenkins-admins,ou=groups,dc=example,dc=org
+    changetype: add
+    cn: jenkins-admins
+    objectclass: top
+    objectClass: groupOfNames
+    member: uid=jenkins.admin,ou=users,dc=example,dc=org
+
+    dn: uid=jenkins.admin,ou=users,dc=example,dc=org
+    changetype: add
+    uid: jenkins.admin
+    cn: Jenkins Admin
+    sn: Jenkins
+    objectClass: top
+    objectClass: inetOrgPerson
+    userPassword: password
+    mail: jenkins.admin@example.org
+
+    dn: uid=jenkins.swarm,ou=users,dc=example,dc=org
+    changetype: add
+    uid: jenkins.swarm
+    cn: Jenkins Swarm
+    sn: Jenkins
+    objectClass: top
+    objectClass: inetOrgPerson
+    userPassword: password
+    mail: jenkins.swarm@example.org
+
+    dn: uid=bob.dylan,ou=users,dc=example,dc=org
+    changetype: add
+    uid: bob.dylan
+    cn: Bob Dylan
+    sn: Dylan
+    objectClass: top
+    objectClass: inetOrgPerson
+    userPassword: password
+    mail: bob.dylan@example.org
+
+    dn: uid=james.dean,ou=users,dc=example,dc=org
+    changetype: add
+    uid: james.dean
+    cn: James Dean
+    sn: Dean
+    objectClass: top
+    objectClass: inetOrgPerson
+    userPassword: password
+    mail: james.dean@example.org

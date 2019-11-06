@@ -1,0 +1,89 @@
+---
+cluster:
+  name:
+  domain:
+vendor:
+  type: gcp
+  region: us-central1
+  zone: us-central1-a
+  project: devops-consulting
+  gcp:
+    storage:
+      identity:
+      secret:
+sites:
+  - name: USA
+    description: US West coast site
+    city:
+      name: Sunnyvale
+      country_code: US
+      latitude: 37.36883
+      longitude: -122.03635
+  - name: England
+    description: Europe West site
+    city:
+      name: London
+      country_code: GB
+      latitude: 51.5074
+      longitude: 0.1278
+services:
+  versions:
+    artifactory: 7.17.1
+    distribution: 3.4.0
+    jfmc: 1.1.5
+    xray: 1.0.5
+    sonar: 0.15.0
+    jenkins: 2.164.2
+  artifactory:
+    - name: artifactory
+      auth_server: true
+      repos:
+        - name: gradle
+          local: true
+          remote: true
+          virtual: true
+          url: https://jcenter.bintray.com
+          package_type: gradle
+        - name: docker
+          local: true
+          remote: true
+          virtual: true
+          url: https://registry-1.docker.io/
+          package_type: docker
+        - name: docker-prod
+          local: true
+          package_type: docker
+        - name: npm
+          local: true
+          remote: true
+          virtual: true
+          url: https://registry.npmjs.org
+          package_type: npm
+        - name: helm
+          local: true
+  distribution:
+    name: distribution
+    site: USA
+  edges:
+    - name: edge-london
+      site: England
+      auth_server: false
+      repos:
+        - name: docker-prod
+          local: true
+        - name: helm
+          local: true
+tools:
+  dev: true
+  sonarqube: true
+  ldap: {}
+  jenkins:
+    site: USA
+    url: https://github.com/userName/
+    jobs:
+      - npm-app-demo/Jenkinsfile.groovy
+      - gradle-app-demo/Jenkinsfile.groovy
+      - docker-app-demo/Jenkinsfile.groovy
+      - helm-app-demo/Jenkinsfile.groovy
+      - create-release-bundle-demo/Jenkinsfile.groovy
+      - distribute-release-bundle-demo/Jenkinsfile.groovy
